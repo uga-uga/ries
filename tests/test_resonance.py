@@ -9,7 +9,7 @@ from ries.resonance.voigt import Voigt
 
 from .B11 import B11
 
-class TestCrossSection:
+class TestResonance:
     @pytest.mark.parametrize('Model, parameters, rtol', 
     [
         (BreitWigner, [], 1e-4),
