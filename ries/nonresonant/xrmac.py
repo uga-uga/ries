@@ -2,9 +2,15 @@ from pathlib import Path
 
 import numpy as np
 from scipy.interpolate import interp1d
+from scipy.constants import physical_constants
 
 class XRMAC:
-    def __init__(self, data):
+    def __init__(self, data,
+        energy_conversion=lambda energy: energy,
+        xrmac_conversion=lambda xrmac: xrmac
+        ):
+        self.energy_conversion = energy_conversion
+        self.xrmac_conversion = xrmac_conversion
         if isinstance(data, str):
             data = self.read_nist_xrmac(data)
         self.data = data
@@ -35,5 +41,9 @@ class XRMAC:
             for line in file:
                 line = line[skip:-2].split(sep='  ')
                 data.append([
-                    float(line[0]), float(line[1]), float(line[2])])
+                        self.energy_conversion(float(line[0])),
+                        self.xrmac_conversion(float(line[1])),
+                        self.xrmac_conversion(float(line[2]))
+                    ]
+                )
         return np.array(data)

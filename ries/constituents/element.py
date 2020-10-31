@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import numpy as np
+from scipy.constants import physical_constants
 
 from ries.constituents.isotope import Isotope
 from ries.nonresonant.xrmac import XRMAC 
@@ -75,11 +76,17 @@ def read_nist_element_symbols(element_data_file_name):
 element_data_file_name = Path(__file__).parent.absolute() / 'nist_elements/elements.txt'
 xrmac_data_dir = Path(__file__).parent.absolute() / '../nonresonant/nist_xrmac/'
 
+cm_to_fm = 1e13
+kg_to_g = 1e3
 X = read_nist_element_symbols(element_data_file_name)
 natural_elements = {}
 for Z in range(1, 119):
     natural_elements[X[Z]] = Element(
         Z, X[Z],
         isotopes=str(element_data_file_name),
-        xrmac=XRMAC(str(xrmac_data_dir / '{:02d}.txt'.format(Z))) if Z < 93 else None # No mass attenuation data for elements with Z > 92 are available from the NIST.
     )
+
+    natural_elements[X[Z]].xrmac = XRMAC(
+        str(xrmac_data_dir / '{:02d}.txt'.format(Z)),
+        xrmac_conversion=lambda xrmac: xrmac*cm_to_fm**2*natural_elements[X[Z]].amu*physical_constants['atomic mass constant'][0]*kg_to_g
+    ) if Z < 93 else None # No mass attenuation data for elements with Z > 92 are available from the NIST.
