@@ -7,7 +7,7 @@ from ries.resonance.gauss import Gauss
 from ries.resonance.pseudo_voigt import PseudoVoigt
 from ries.resonance.voigt import Voigt
 
-from .B11 import B11
+from .boron import B11
 
 class TestResonance:
     @pytest.mark.parametrize('Model, parameters, rtol', 

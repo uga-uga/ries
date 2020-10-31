@@ -3,7 +3,7 @@ from scipy.constants import physical_constants
 
 from ries.resonance.resonance_model import ResonanceModel
 
-from .B11 import B11
+from .boron import B11
 
 def test_resonance_model():
     cs = ResonanceModel(

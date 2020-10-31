@@ -1,4 +1,4 @@
-from .B11 import B11
+from .boron import B11
 
 def test_state():
     assert B11.ground_state.excitation_energy == 0.

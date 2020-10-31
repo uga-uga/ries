@@ -3,7 +3,7 @@ from scipy.constants import physical_constants
 from ries.resonance.resonance_model import ResonanceModel
 from ries.resonance.recoil import FreeNucleusRecoil
 
-from .B11 import B11
+from .boron import B11
 
 def test_recoil():
     cs = ResonanceModel(
