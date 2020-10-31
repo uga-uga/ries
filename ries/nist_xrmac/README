@@ -1,0 +1,5 @@
+This directory contains tabulated x-ray mass attenuation coefficients for chemical elements from:
+
+[1] J. Hubbell and S. M. Seltzer, 'Tables of X-Ray Mass Attenuation Coefficients and Mass Energy-Absorption Coefficients from 1 keV to 20 MeV for Elements Z = 1 to 92 and 48 Additional Substances of Dosimetric Interest', NIST Standard Reference Database 126 (1996) https://dx.doi.org/10.18434/T4D01F
+
+Each file 'ZZ.txt' contains the 'ASCII format' table from Ref. [1] for an element with the proton number ZZ (zero-padded, i.e. the file for hydrogen is '01.txt').
