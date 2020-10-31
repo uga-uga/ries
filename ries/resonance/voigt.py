@@ -2,8 +2,8 @@ import numpy as np
 from scipy.special import voigt_profile
 from scipy.stats import cauchy, norm
 
-from ries.gauss import Gauss
-from ries.pseudo_voigt import PseudoVoigt
+from ries.resonance.gauss import Gauss
+from ries.resonance.pseudo_voigt import PseudoVoigt
 
 class VoigtDistribution:
     def __init__(self):

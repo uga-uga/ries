@@ -1,4 +1,4 @@
-from ries.element import natural_elements, X
+from ries.constituents.element import natural_elements, X
 
 def test_element():
     assert natural_elements['Pb'].Z == 82

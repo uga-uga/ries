@@ -1,5 +1,5 @@
-from ries.isotope import Isotope
-from ries.state import GroundState, State
+from ries.constituents.isotope import Isotope
+from ries.constituents.state import GroundState, State
 
 B11 = Isotope(
     AX='11B', 

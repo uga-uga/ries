@@ -1,12 +1,12 @@
 from scipy.constants import physical_constants
 
-from ries.cross_section_model import CrossSectionModel
-from ries.recoil import FreeNucleusRecoil
+from ries.resonance.resonance_model import ResonanceModel
+from ries.resonance.recoil import FreeNucleusRecoil
 
 from .B11 import B11
 
 def test_recoil():
-    cs = CrossSectionModel(
+    cs = ResonanceModel(
         initial_state=B11.ground_state,
         intermediate_state=B11.excited_states['5/2^-_1'],
         recoil_correction=FreeNucleusRecoil(11.009305166)

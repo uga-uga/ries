@@ -2,8 +2,8 @@ from pathlib import Path
 
 import numpy as np
 
-from ries.isotope import Isotope
-from ries.xrmac import XRMAC 
+from ries.constituents.isotope import Isotope
+from ries.nonresonant.xrmac import XRMAC 
 
 class Element:
     def __init__(self, Z, X=None, isotopes=None, abundances=None, 
@@ -73,7 +73,7 @@ def read_nist_element_symbols(element_data_file_name):
     return X
 
 element_data_file_name = Path(__file__).parent.absolute() / 'nist_elements/elements.txt'
-xrmac_data_dir = Path(__file__).parent.absolute() / 'nist_xrmac/'
+xrmac_data_dir = Path(__file__).parent.absolute() / '../nonresonant/nist_xrmac/'
 
 X = read_nist_element_symbols(element_data_file_name)
 natural_elements = {}

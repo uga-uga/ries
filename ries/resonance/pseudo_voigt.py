@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import cauchy, norm
 
-from ries.gauss import Gauss
+from ries.resonance.gauss import Gauss
 
 class PseudoVoigtDistribution:
     def __init__(self):

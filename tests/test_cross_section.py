@@ -2,10 +2,10 @@ import numpy as np
 import pytest
 from scipy.integrate import quad
 
-from ries.breit_wigner import BreitWigner
-from ries.gauss import Gauss
-from ries.pseudo_voigt import PseudoVoigt
-from ries.voigt import Voigt
+from ries.resonance.breit_wigner import BreitWigner
+from ries.resonance.gauss import Gauss
+from ries.resonance.pseudo_voigt import PseudoVoigt
+from ries.resonance.voigt import Voigt
 
 from .B11 import B11
 

@@ -2,12 +2,12 @@ import numpy as np
 from scipy.constants import physical_constants
 from scipy.stats import norm
 
-from ries.cross_section_model import CrossSectionModel
+from ries.resonance.resonance_model import ResonanceModel
 
-class Gauss(CrossSectionModel):
+class Gauss(ResonanceModel):
     def __init__(self, initial_state, intermediate_state, amu, effective_temperature,
         final_state=None):
-        CrossSectionModel.__init__(self, initial_state, intermediate_state, final_state)
+        ResonanceModel.__init__(self, initial_state, intermediate_state, final_state)
 
         self.amu = amu
         self.effective_temperature = effective_temperature

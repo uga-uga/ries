@@ -1,12 +1,12 @@
 import numpy as np
 from scipy.constants import physical_constants
 
-from ries.cross_section_model import CrossSectionModel
+from ries.resonance.resonance_model import ResonanceModel
 
 from .B11 import B11
 
-def test_cross_section_model():
-    cs = CrossSectionModel(
+def test_resonance_model():
+    cs = ResonanceModel(
         initial_state=B11.ground_state,
         intermediate_state=B11.excited_states['5/2^-_1']
     )
@@ -19,7 +19,7 @@ def test_cross_section_model():
     assert np.allclose(cs.energy_grid(0.5, 3), np.array([4.44498-0.25, 4.44498, 4.44498+0.25]), rtol=1e-5)
     assert np.allclose(cs.probability_grid(0.5, 3), np.array([4.44498-0.25, 4.44498, 4.44498+0.25]), rtol=1e-5)
 
-    cs = CrossSectionModel(
+    cs = ResonanceModel(
         initial_state=B11.ground_state,
         intermediate_state=B11.excited_states['3/2^-_2'],
         final_state=B11.excited_states['1/2^-_1']

@@ -3,9 +3,9 @@ import numpy as np
 from scipy.constants import physical_constants
 from scipy.stats import uniform
 
-from ries.recoil import NoRecoil
+from ries.resonance.recoil import NoRecoil
 
-class CrossSectionModel:
+class ResonanceModel:
     def __init__(self, initial_state, intermediate_state,
         final_state=None, recoil_correction=NoRecoil()):
         self.initial_state = initial_state

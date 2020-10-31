@@ -1,11 +1,11 @@
 from scipy.stats import cauchy
 
-from ries.cross_section_model import CrossSectionModel
+from ries.resonance.resonance_model import ResonanceModel
 
-class BreitWigner(CrossSectionModel):
+class BreitWigner(ResonanceModel):
     def __init__(self, initial_state, intermediate_state,
         final_state=None):
-        CrossSectionModel.__init__(self, initial_state, intermediate_state, final_state)
+        ResonanceModel.__init__(self, initial_state, intermediate_state, final_state)
 
         self.probability_distribution = cauchy
         self.probability_distribution_parameters = (
