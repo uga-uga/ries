@@ -4,6 +4,8 @@ import numpy as np
 from scipy.interpolate import interp1d
 from scipy.constants import physical_constants
 
+from ries.constituents.element import natural_elements, X
+
 class XRMAC:
     def __init__(self, data,
         energy_conversion=lambda energy: energy,
@@ -47,3 +49,15 @@ class XRMAC:
                     ]
                 )
         return np.array(data)
+
+xrmac_data_dir = Path(__file__).parent.absolute() / '../nonresonant/nist_xrmac/'
+
+xrmac = {}
+cm_to_fm = 1e13
+kg_to_g = 1e3
+
+for Z in range(1, 93):
+    xrmac[X[Z]] = XRMAC(
+        str(xrmac_data_dir / '{:02d}.txt'.format(Z)),
+        xrmac_conversion=lambda xrmac: xrmac*cm_to_fm**2*natural_elements[X[Z]].amu*physical_constants['atomic mass constant'][0]*kg_to_g
+    )

@@ -1,6 +1,6 @@
 import numpy as np
 
-class PhotoabsorptionCrossSectionIsotope:
+class PhotoabsorptionCrossSection:
     def __init__(self, isotope, ResonanceModel,
         resonance_model_parameters):
         self.isotope = isotope
@@ -27,30 +27,3 @@ class PhotoabsorptionCrossSectionIsotope:
                 )
 
         return resonances
-
-class PhotoabsorptionCrossSectionElement:
-    def __init__(self, element, resonance_model,
-        resonance_model_parameters):
-        self.element = element
-        self.resonance_model = resonance_model
-        self.resonance_model_parameters = resonance_model_parameters
-        self.photoabsorption_cross_sections = self.get_photoabsorption_cross_sections()
-
-    def __call__(self, energy):
-        cross_section = 0.
-        for isotope in self.element.isotopes:
-            cross_section += self.element.abundances[isotope]*self.photoabsorption_cross_sections[isotope](energy)
-
-        return cross_section
-
-    def get_photoabsorption_cross_sections(self):
-        photoabsorption_cross_sections = {}
-
-        for isotope in self.element.isotopes:
-            photoabsorption_cross_sections[self.element.isotopes[isotope].AX] = PhotoabsorptionCrossSectionIsotope(
-                self.element.isotopes[isotope],
-                self.resonance_model[isotope],
-                self.resonance_model_parameters[isotope]
-            )
-
-        return photoabsorption_cross_sections
