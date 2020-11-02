@@ -5,8 +5,9 @@ from scipy.interpolate import interp1d
 from scipy.constants import physical_constants
 
 from ries.constituents.element import natural_elements, X
+from ries.cross_section import CrossSection
 
-class XRMAC:
+class XRMAC(CrossSection):
     def __init__(self, data,
         energy_conversion=lambda energy: energy,
         xrmac_conversion=lambda xrmac: xrmac
