@@ -1,12 +1,12 @@
 from scipy.constants import physical_constants
 
-from ries.resonance.resonance_model import ResonanceModel
+from ries.resonance.resonance import Resonance
 from ries.resonance.recoil import FreeNucleusRecoil
 
 from .boron import B11
 
 def test_recoil():
-    cs = ResonanceModel(
+    cs = Resonance(
         initial_state=B11.ground_state,
         intermediate_state=B11.excited_states['5/2^-_1'],
         recoil_correction=FreeNucleusRecoil(11.009305166)

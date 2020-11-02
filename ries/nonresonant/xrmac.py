@@ -6,8 +6,9 @@ from scipy.constants import physical_constants
 
 from ries.constituents.element import natural_elements, X
 from ries.cross_section import CrossSection
+from ries.nonresonant.nonresonant import Nonresonant
 
-class XRMAC(CrossSection):
+class XRMAC(Nonresonant):
     def __init__(self, data,
         energy_conversion=lambda energy: energy,
         xrmac_conversion=lambda xrmac: xrmac

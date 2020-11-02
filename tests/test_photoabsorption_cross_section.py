@@ -23,7 +23,7 @@ def test_photoabsorption_cross_section():
             B11.ground_state,
             B11.excited_states[state],
             B11.amu, 293.)
-        energy = resonance.probability_grid(0.9, 10)
+        energy = resonance.equidistant_probability_grid(0.9, 10)
 
         cs_resonance = resonance(energy)
         cs_isotope = pa_11b(energy)

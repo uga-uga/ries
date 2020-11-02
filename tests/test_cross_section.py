@@ -34,7 +34,7 @@ class TestCrossSection:
         assert len(photoabsorption_cross_section.reactions) == len(ground_state_resonances)
 
         for resonance in ground_state_resonances:
-            energy = resonance.probability_grid(0.9, 10)
+            energy = resonance.equidistant_probability_grid(0.9, 10)
             single_cross_section = resonance(energy)
             sum_cross_section = photoabsorption_cross_section(energy)
 
@@ -44,7 +44,7 @@ class TestCrossSection:
         assert len(photoabsorption_cross_section.reactions) == 2*len(ground_state_resonances)
 
         for resonance in ground_state_resonances:
-            energy = resonance.probability_grid(0.9, 10)
+            energy = resonance.equidistant_probability_grid(0.9, 10)
             single_cross_section = resonance(energy)
             sum_cross_section = photoabsorption_cross_section(energy)
 
@@ -54,3 +54,9 @@ class TestCrossSection:
 
         photoabsorption_cross_section_value = 5.890e-2*cm_to_fm**2*natural_elements['B'].amu*physical_constants['atomic mass constant'][0]*kg_to_g
         assert np.isclose(photoabsorption_cross_section(1.), photoabsorption_cross_section_value, rtol=1e-6)
+
+    def test_grid(self):
+        assert np.allclose(
+            xrmac['B'].equidistant_energy_grid((0., 1.), 3),
+            np.array([0., 0.5, 1.]), rtol=1e-3
+        )

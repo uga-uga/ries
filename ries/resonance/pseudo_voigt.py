@@ -7,6 +7,20 @@ class PseudoVoigtDistribution:
     def __init__(self):
         pass
 
+    def cdf(self, energy, resonance_energy, eta, gamma_G, gamma_L):
+        return(
+            (1.-eta)*norm.cdf(
+                energy,
+                loc=resonance_energy,
+                scale=gamma_G/np.sqrt(2.)
+            )
+            +eta*cauchy.cdf(
+                energy,
+                loc=resonance_energy,
+                scale=0.5*gamma_L
+            )
+        )
+
     def pdf(self, energy, resonance_energy, eta, gamma_G, gamma_L):
         return(
             (1.-eta)*norm.pdf(

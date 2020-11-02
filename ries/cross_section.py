@@ -1,6 +1,11 @@
+import numpy as np
+
 class CrossSection:
     def __add__(self, other):
         return SumCrossSection([self, other])
+
+    def equidistant_energy_grid(self, limits, n_points):
+        return np.linspace(limits[0], limits[1], n_points)
 
 class SumCrossSection:
     def __init__(self, reactions=[]):

@@ -1,11 +1,11 @@
 from scipy.stats import cauchy
 
-from ries.resonance.resonance_model import ResonanceModel
+from ries.resonance.resonance import Resonance
 
-class BreitWigner(ResonanceModel):
+class BreitWigner(Resonance):
     def __init__(self, initial_state, intermediate_state,
         final_state=None):
-        ResonanceModel.__init__(self, initial_state, intermediate_state, final_state)
+        Resonance.__init__(self, initial_state, intermediate_state, final_state)
 
         self.probability_distribution = cauchy
         self.probability_distribution_parameters = (

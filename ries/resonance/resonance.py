@@ -6,7 +6,7 @@ from scipy.stats import uniform
 from ries.cross_section import CrossSection
 from ries.resonance.recoil import NoRecoil
 
-class ResonanceModel(CrossSection):
+class Resonance(CrossSection):
     def __init__(self, initial_state, intermediate_state,
         final_state=None, recoil_correction=NoRecoil()):
         self.initial_state = initial_state
@@ -33,13 +33,20 @@ class ResonanceModel(CrossSection):
             *self.probability_distribution_parameters
         )
 
-    def energy_grid(self, coverage, n_points):
-        coverage_interval = self.coverage_interval(coverage)
-        return np.linspace(coverage_interval[0], coverage_interval[1], n_points)
+    def equidistant_energy_grid(self, coverage_or_limits, n_points):
+        if isinstance(coverage_or_limits, (int, float)):
+            limits = self.coverage_interval(coverage_or_limits)
+        else:
+            limits = coverage_or_limits
+        return np.linspace(limits[0], limits[1], n_points)
 
-    def probability_grid(self, coverage, n_points):
+    def equidistant_probability_grid(self, coverage_or_limits, n_points):
+        if isinstance(coverage_or_limits, (int, float)):
+            limits = (0.5*(1.-coverage_or_limits), 0.5*(1.+coverage_or_limits))
+        else:
+            limits = self.probability_distribution.cdf(coverage_or_limits, *self.probability_distribution_parameters)
         return self.probability_distribution.ppf(
-            0.5*np.linspace(1. - coverage, 1.+coverage, n_points),
+            np.linspace(limits[0], limits[1], n_points),
             *self.probability_distribution_parameters
         )
 

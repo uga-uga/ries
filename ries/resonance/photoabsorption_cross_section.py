@@ -1,11 +1,11 @@
 import numpy as np
 
 class PhotoabsorptionCrossSection:
-    def __init__(self, isotope, ResonanceModel,
-        resonance_model_parameters):
+    def __init__(self, isotope, Resonance,
+        resonance_parameters):
         self.isotope = isotope
-        self.ResonanceModel = ResonanceModel
-        self.resonance_model_parameters = resonance_model_parameters
+        self.Resonance = Resonance
+        self.resonance_parameters = resonance_parameters
         self.resonances = self.get_resonances()
 
     def __call__(self, energy):
@@ -20,10 +20,10 @@ class PhotoabsorptionCrossSection:
 
         for state in self.isotope.excited_states:
             if self.isotope.ground_state.J_pi in self.isotope.excited_states[state].partial_widths:
-                resonances[self.isotope.excited_states[state].J_pi] = self.ResonanceModel(
+                resonances[self.isotope.excited_states[state].J_pi] = self.Resonance(
                     self.isotope.ground_state,
                     self.isotope.excited_states[state],
-                    *self.resonance_model_parameters
+                    *self.resonance_parameters
                 )
 
         return resonances

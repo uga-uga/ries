@@ -2,12 +2,12 @@ import numpy as np
 from scipy.constants import physical_constants
 from scipy.stats import norm
 
-from ries.resonance.resonance_model import ResonanceModel
+from ries.resonance.resonance import Resonance
 
-class Gauss(ResonanceModel):
+class Gauss(Resonance):
     def __init__(self, initial_state, intermediate_state, amu, effective_temperature,
         final_state=None):
-        ResonanceModel.__init__(self, initial_state, intermediate_state, final_state)
+        Resonance.__init__(self, initial_state, intermediate_state, final_state)
 
         self.amu = amu
         self.effective_temperature = effective_temperature
