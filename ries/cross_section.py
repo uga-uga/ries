@@ -40,7 +40,7 @@ class CrossSectionWeightedSum:
         for i, reaction in enumerate(self.reactions):
             reactions.append(reaction)
             scale_factors.append(self.scale_factors[i])
-        
+
         if isinstance(other, (int, float)):
             reactions.append(ConstantCrossSection(other))
             scale_factors.append(1.)

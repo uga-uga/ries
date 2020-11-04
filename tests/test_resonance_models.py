@@ -8,14 +8,15 @@ from ries.resonance.pseudo_voigt import PseudoVoigt
 from ries.resonance.voigt import Voigt
 
 from .boron import B11
+from ries.resonance.debye_model import effective_temperature_debye_approximation, room_temperature_T_D
 
 class TestResonanceModels:
     @pytest.mark.parametrize('Model, parameters, rtol', 
     [
         (BreitWigner, [], 1e-4),
-        (Gauss, [B11.amu, 293.], 1e-4),
-        (PseudoVoigt, [B11.amu, 293.], 1e-3),
-        (Voigt, [B11.amu, 293.], 2e-2),
+        (Gauss, [B11.amu, effective_temperature_debye_approximation(293., room_temperature_T_D['B'])], 1e-4),
+        (PseudoVoigt, [B11.amu, effective_temperature_debye_approximation(293., room_temperature_T_D['B'])], 1e-3),
+        (Voigt, [B11.amu, effective_temperature_debye_approximation(293., room_temperature_T_D['B'])], 2e-2),
     ])
     def test_coverage(self, Model, parameters, rtol):
         cs = Model(
