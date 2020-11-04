@@ -2,6 +2,7 @@ build
 dist
 .coverage
 htmlcov
+*.pdf
 __pycache__
 ries.egg-info
 .tox

@@ -1,10 +1,10 @@
-from ries.constituents.element import Element
+from ries.constituents.element import Element, natural_elements
 from ries.constituents.isotope import Isotope
 from ries.constituents.state import GroundState, State
 
 B10 = Isotope(
     AX='10B', 
-    amu=10.012936862,
+    amu=natural_elements['B'].isotopes['10B'].amu,
     ground_state=GroundState('3^+_1', 6, -1),
     excited_states={
         '1^+_1': State(
@@ -19,7 +19,7 @@ B10 = Isotope(
 
 B11 = Isotope(
     AX='11B', 
-    amu=11.009305166,
+    amu=natural_elements['B'].isotopes['11B'].amu,
     ground_state=GroundState('3/2^-_1', 3, -1),
     excited_states={
         '1/2^-_1': State(
@@ -90,5 +90,5 @@ B11 = Isotope(
 
 natural_boron = Element(5, 'B', 
     isotopes={'10B': B10, '11B': B11},
-    abundances={'10B': 0.144, '11B': 0.856}
+    abundances={'10B': natural_elements['B'].abundances['10B'], '11B': natural_elements['B'].abundances['11B']}
 )

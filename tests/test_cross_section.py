@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 from scipy.constants import physical_constants
 
-from ries.cross_section import CrossSectionWeightedSum
+from ries.cross_section import ConstantCrossSection, CrossSectionWeightedSum
 from ries.constituents.element import natural_elements
 from ries.nonresonant.xrmac import cm_to_fm, kg_to_g, xrmac
 from ries.resonance.voigt import Voigt
@@ -74,4 +74,24 @@ class TestCrossSection:
         assert np.allclose(
             xrmac['B'].equidistant_energy_grid((0., 1.), 3),
             np.array([0., 0.5, 1.]), rtol=1e-3
+        )
+
+        cross_section = ConstantCrossSection(1.)
+        assert np.allclose(
+            cross_section.equidistant_probability_grid((0., 1.), 3),
+            np.array([0., 0.5, 1.]),
+            rtol=1e-6
+        )
+
+        cross_section = cross_section + cross_section
+        assert np.allclose(
+            cross_section.equidistant_probability_grid((0., 1.), 3),
+            np.array([0., 0.5, 1.]),
+            rtol=1e-6
+        )
+
+        assert np.allclose(
+            cross_section.equidistant_energy_grid((0., 1.), 3),
+            np.array([0., 0.5, 1.]),
+            rtol=1e-6
         )

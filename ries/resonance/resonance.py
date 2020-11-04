@@ -35,10 +35,8 @@ class Resonance(CrossSection):
 
     def equidistant_energy_grid(self, coverage_or_limits, n_points):
         if isinstance(coverage_or_limits, (int, float)):
-            limits = self.coverage_interval(coverage_or_limits)
-        else:
-            limits = coverage_or_limits
-        return np.linspace(limits[0], limits[1], n_points)
+            coverage_or_limits = self.coverage_interval(coverage_or_limits)
+        return CrossSection.equidistant_energy_grid(self, coverage_or_limits, n_points)
 
     def equidistant_probability_grid(self, coverage_or_limits, n_points):
         if isinstance(coverage_or_limits, (int, float)):

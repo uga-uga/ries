@@ -1,3 +1,4 @@
+from itertools import chain
 from warnings import warn
 
 import numpy as np
@@ -19,6 +20,9 @@ class CrossSection:
 
     def equidistant_energy_grid(self, limits, n_points):
         return np.linspace(limits[0], limits[1], n_points)
+
+    def equidistant_probability_grid(self, limits, n_points):
+        return self.equidistant_energy_grid(limits, n_points)
 
 class ConstantCrossSection(CrossSection):
     def __init__(self, constant):
@@ -75,3 +79,13 @@ class CrossSectionWeightedSum:
             cross_section += self.scale_factors[i]*reaction(energy)
 
         return cross_section
+
+    def equidistant_energy_grid(self, limits, n_points):
+        return np.linspace(limits[0], limits[1], n_points)
+
+    def equidistant_probability_grid(self, limits, n_points_per_cross_section):
+        grid = []
+        for reaction in self.reactions:
+            grid.append(reaction.equidistant_probability_grid(limits, n_points_per_cross_section))
+        grid = list(chain(*grid))
+        return np.unique(grid)
