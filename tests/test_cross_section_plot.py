@@ -5,9 +5,10 @@ from scipy.integrate import cumtrapz
 
 from ries.resonance.debye_model import effective_temperature_debye_approximation, room_temperature_T_D
 from ries.resonance.voigt import Voigt
+from ries.nonresonant.klein_nishina import KleinNishina
 from ries.nonresonant.xrmac import xrmac
 
-from .boron import B11
+from .boron import B11, natural_boron
 
 def test_cross_section_plot():
     cross_section_nonresonant = xrmac['B']
@@ -19,6 +20,7 @@ def test_cross_section_plot():
         ) for excited_state in B11.excited_states
     ])
     cross_section = cross_section_nonresonant + cross_section_resonant
+    cross_section_compton = KleinNishina(natural_boron.Z)
 
     ene_lim = (1e-2, 12.)
     ene = cross_section.equidistant_probability_grid(ene_lim, 1000)
@@ -28,6 +30,8 @@ def test_cross_section_plot():
     cro_sec_non_res_int = cumtrapz(cro_sec_non_res, ene)
     cro_sec_res = cross_section_resonant(ene)
     cro_sec_res_int = cumtrapz(cro_sec_res, ene)
+    cro_sec_com = cross_section_compton(ene)
+    cro_sec_com_int = cumtrapz(cro_sec_com, ene)
 
     xlabel = 'Energy (MeV)'
 
@@ -44,6 +48,7 @@ def test_cross_section_plot():
     ax_cro_sec.set_xlim(ene_lim)
     ax_cro_sec.set_ylabel(r'$\sigma_\mathrm{NR} + \sigma_\mathrm{R}$ (fm$^2$)')
     ax_cro_sec.semilogy(ene, cro_sec, color='black')
+    ax_cro_sec.semilogy(ene, cro_sec_com, '--', color='black')
 
     ax_cro_sec_non_res = inset_axes(
         ax, width='100%', height='100%',
@@ -54,6 +59,7 @@ def test_cross_section_plot():
     ax_cro_sec_non_res.set_xlim(ene_lim)
     ax_cro_sec_non_res.set_ylabel(r'$\sigma_\mathrm{NR}$ (fm$^2$)')
     ax_cro_sec_non_res.semilogy(ene, cro_sec_non_res, color='black')
+    ax_cro_sec_non_res.semilogy(ene, cro_sec_com, '--', color='black')
 
     ax_cro_sec_non_res_int = inset_axes(
         ax, width='100%', height='100%',
@@ -65,6 +71,7 @@ def test_cross_section_plot():
     ax_cro_sec_non_res_int.set_xlim(ene_lim)
     ax_cro_sec_non_res_int.set_ylabel(r'$\int \sigma_\mathrm{NR} \mathrm{d} E$ (MeV fm$^2$)')
     ax_cro_sec_non_res_int.plot(ene[:-1], cro_sec_non_res_int, color='black')
+    ax_cro_sec_non_res_int.plot(ene[:-1], cro_sec_com_int, '--', color='black')
 
     ax_cro_sec_res = inset_axes(
         ax, width='100%', height='100%',
