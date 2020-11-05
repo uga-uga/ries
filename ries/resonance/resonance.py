@@ -43,10 +43,19 @@ class Resonance(CrossSection):
             limits = (0.5*(1.-coverage_or_limits), 0.5*(1.+coverage_or_limits))
         else:
             limits = self.probability_distribution.cdf(coverage_or_limits, *self.probability_distribution_parameters)
-        return self.probability_distribution.ppf(
+        equ_dis_pro_grid = self.probability_distribution.ppf(
             np.linspace(limits[0], limits[1], n_points),
             *self.probability_distribution_parameters
         )
+        # This last if clause prevents rounding errors.
+        # For finite limits that are very far away from the resonance energy, 
+        # probability_distribution.cdf() may return 0 or 1 instead of 0.000... or 0.999..., 
+        # which would then cause probability_distribution.ppf to return -np.inf or np.inf as 
+        # limits of the grid instead of the given values.
+        if not isinstance(coverage_or_limits, (int, float)):
+            equ_dis_pro_grid[0] = coverage_or_limits[0]
+            equ_dis_pro_grid[-1] = coverage_or_limits[1]
+        return equ_dis_pro_grid
 
     def get_energy_integrated_cross_section(self):
         return (
