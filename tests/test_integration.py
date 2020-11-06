@@ -5,6 +5,7 @@ from scipy.integrate import quad
 
 from ries.integration.darboux import darboux
 from ries.integration.quad_subintervals import quad_subintervals
+from ries.integration.nquad_subintervals import nquad_subintervals
 from ries.resonance.gauss import Gauss
 
 from .boron import B11
@@ -19,16 +20,26 @@ class TestIntegration:
     @pytest.mark.parametrize('n_points', [(2), (10), (100), (1000)])
     def test_quad_subinterval(self, n_points):
         assert np.isclose(
-            quad_subintervals(lambda x: 1., np.linspace(0., 1., n_points)),
+            quad_subintervals(lambda x: 1., np.linspace(0., 1., n_points))[0],
+            1., rtol = 1e-6
+        )
+
+    @pytest.mark.parametrize('n_points', [(2), (10), (100), (1000)])
+    def test_nquad_subinterval(self, n_points):
+        assert np.isclose(
+            nquad_subintervals(lambda x, y: 1., np.linspace(0., 1., n_points), [[0., 1.]])[0],
             1., rtol = 1e-6
         )
 
     @pytest.mark.parametrize('n_points', [(2), (10), (100), (1000)])
     def test_darboux(self, n_points):
+        # Call darboux by passing the function to be evaluated.
         integral = darboux(lambda x: 1. if np.ndim(x) == 0 else np.ones(len(x)), np.linspace(0., 1., n_points))
-        assert integral[0] == integral[1]
         assert np.isclose(integral[0], 1., rtol = 1e-6)
-        assert np.isclose(integral[1], 1., rtol = 1e-6)
+        assert np.isclose(1.+integral[1], 1., rtol = 1e-6)
+
+        # Call darboux by passing the values of the function at the points x.
+        assert np.isclose(darboux(np.ones(n_points), np.linspace(0., 1., n_points))[0], 1., rtol=1e-6)
 
     def test_darboux_lower_upper(self):
         n_points = 100
@@ -58,7 +69,7 @@ class TestIntegration:
         # The problem can be solved by integrating over subintervals whose lenghts are adapted to
         # the function at hand.
         energies = cross_section.equidistant_probability_grid(limits, 2000)
-        cross_section_integral_numerical = quad_subintervals(cross_section, energies)
+        cross_section_integral_numerical = quad_subintervals(cross_section, energies)[0]
 
         assert np.isclose(cross_section_integral_numerical, cross_section_integral_analytical, rtol=1e-3)
 
@@ -67,3 +78,19 @@ class TestIntegration:
         cross_section_integral_numerical = darboux(cross_section, energies)[0]
 
         assert np.isclose(cross_section_integral_numerical, cross_section_integral_analytical, rtol=1e-3)
+
+    def test_resonance_integration_2d(self):
+        cross_section = Gauss(
+            B11.ground_state,
+            B11.excited_states['1/2^-_1'],
+            B11.amu,
+            1.
+        )
+
+        limits = (1., 3.)
+
+        energies = cross_section.equidistant_probability_grid(limits, 250)
+        cross_section_integral_analytical = cross_section.energy_integrated_cross_section
+        cross_section_integral_numerical = nquad_subintervals(lambda e, z: cross_section(e), energies, [[0., 1.]])[0]
+
+        assert np.isclose(cross_section_integral_numerical, cross_section_integral_analytical, rtol=1e-2)
