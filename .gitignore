@@ -5,4 +5,10 @@ htmlcov
 *.pdf
 __pycache__
 ries.egg-info
+
+# sphinx
+make.bat
+Makefile
+
+# tox
 .tox

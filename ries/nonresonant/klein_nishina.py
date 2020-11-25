@@ -1,170 +1,167 @@
+"""
+At first order in quantum electrodynamics, the cross section \
+:math:`\\sigma_\\mathrm{Compton} \\left( E \\right)` for Compton scattering of a photon with an \
+initial energy :math:`E` off a free electron at rest is given by the Klein-Nishina formula \
+:cite:`KleinNishina1929`:
+
+.. math:: \\sigma_\\mathrm{Compton} \\left( E \\right) = \\frac{\\pi \\alpha^2 \\hbar^2}{m_e^2 c^2} \\frac{1}{x^3} \\left\\{ \\frac{2x \\left[ 2 + x \\left( 1 + x \\right) \\left( 8 + x \\right)\\right]}{\\left( 1 + 2 x \\right)^2} + \\left[ \\left( x - 2 \\right) x - 2 \\right] \\mathrm{log} \\left( 1 + 2x \\right) \\right\\}.
+
+In the equation above, the abbreviation
+
+.. math:: x = \\frac{E}{m_e c^2}
+
+has been used.
+The symbols :math:`\\alpha`, :math:`\\hbar`, :math:`m_e`, and :math:`c` denote the fine-structure \
+constant, the reduced Planck constant, the electron rest mass, and the speed of light, \
+respectively.
+
+The corresponding solid-angle differential cross section is given by :cite:`Depaola2003`:
+
+.. math:: \\frac{\\mathrm{d} \\sigma_\\mathrm{Compton}}{\\mathrm{d}\\Omega} (E, \\Omega) = \\frac{1}{2}\\frac{\\alpha^2 \\hbar^2}{m_e^2 c^2} \\left( \\frac{E^\\prime}{E} \\right)^2 \\left[ \\frac{E^\\prime}{E} + \\frac{E}{E^\\prime} - 2 \\sin \\left( \\theta \\right)^2 \\cos \\left( \\varphi \\right)^2 \\right].
+
+Here, the angle :math:`\\theta` denotes the polar angle of the scattered photon with respect to \
+its initial direction of propagation.
+The angle :math:`\\varphi` is the corresponding azimuthal angle, which is  defined with respect \
+to the direction of polarization of the initial photon.
+The equation above also contains the energy of the scattered photon, :math:`E^\\prime`, which is related to :math:`E` via:
+
+.. math:: E^\\prime \\left( E, \\theta \\right) = \\frac{E}{1 + \\frac{E}{m_e c^2} \\left[ 1 - \\cos \\left(\\theta \\right) \\right]}.
+
+If no information on the polarization of the incident photon is available, the differential \
+cross section can be averaged over the azimuthal angle:
+
+.. math:: \\frac{\\mathrm{d} \\sigma_\\mathrm{Compton, unpolarized}}{\\mathrm{d}\\Omega} (E, \\Omega) = \\frac{\\int_0^{2\\pi} \\frac{\\mathrm{d} \\sigma_\\mathrm{Compton}}{\\mathrm{d}\\Omega} (E, \\Omega) \\mathrm{d} \\varphi}{\\int_0^{2\\pi} \\mathrm{d} \\varphi} = \\frac{1}{2}\\frac{\\alpha^2 \\hbar^2}{m_e^2 c^2} \\left( \\frac{E^\\prime}{E} \\right)^2 \\left[ \\frac{E^\\prime}{E} + \\frac{E}{E^\\prime} - \\sin \\left( \\theta \\right)^2 \\right].
+
+An integration of either :math:`\\mathrm{d} \\sigma_\\mathrm{Compton} / \\mathrm{d} \\Omega` or \
+:math:`\\mathrm{d} \\sigma_\\mathrm{Compton, unpolarized} / \\mathrm{d} \\Omega` over the azimuthal \
+angle gives the scattering-angle differential cross section:
+
+.. math:: \\frac{\\mathrm{d} \\sigma_\\mathrm{Compton}}{\\mathrm{d} \\theta} (E, \\theta) = \\int_0^{2\\pi} \\frac{\\mathrm{d} \\sigma_\\mathrm{Compton}}{\\mathrm{d}\\Omega} (E, \\Omega) \\sin \\left( \\theta \\right) \\mathrm{d} \\varphi = \\frac{\\pi \\alpha^2 \\hbar^2}{m_e^2 c^2} \\left( \\frac{E^\\prime}{E} \\right)^2 \\left[ \\frac{E^\\prime}{E} + \\frac{E}{E^\\prime} - \\sin \\left( \\theta \\right)^2 \\right] \\sin \\left( \\theta \\right).
+
+Note the additional factor :math:`\\sin \\left( \\theta \\right)`, which comes from the fact that:
+
+.. math:: \\mathrm{d} \\Omega = \\mathrm{d} \\cos \\left( \\theta \\right) \\mathrm{d} \\varphi =  \\sin \\left( \\theta \\right) \\mathrm{d} \\theta \\mathrm{d} \\varphi.
+
+The differential cross section with respect to :math:`\\cos \\left( \\theta \\right)` can be \
+converted to the energy-differential cross section using the relation to :math:`E^\\prime` above:
+
+.. math:: \\mathrm{d} \\cos \\left( \\theta \\right) = \\frac{m c^2}{E^{\\prime 2}} \\mathrm{d} E^\\prime.
+
+Inserting the relation above in the expression for the scattering-angle differential equation \
+and abbreviating the inverse relation between :math:`\\theta` and :math:`E^\\prime` as \
+:math:`\\theta \\left( E, E^\\prime \\right)`, one obtains:
+
+.. math:: \\frac{\\mathrm{d} \\sigma_\\mathrm{Compton}}{\\mathrm{d} E^\\prime} (E, E^\\prime) = \\frac{\\pi \\alpha^2 \\hbar^2}{E^2} \\left\\{ \\frac{E^\\prime}{E} + \\frac{E}{E^\\prime} - \\sin \\left[ \\theta \\left( E, E^\\prime \\right) \\right]^2 \\right\\}.
+"""
+
 import numpy as np
 from scipy.constants import physical_constants
 
 from ries.nonresonant.nonresonant import Nonresonant
 
 class KleinNishina(Nonresonant):
-    """Cross section for Compton scattering of a photon off a free electron
-    
-This class implements the total, energy-differential, solid-angle differential, and 
-scattering-angle differential cross section for Compton scattering, as given by the Klein-Nishina 
-formula [1].
+    """(Differential) Cross section for Compton scattering of a photon off a free electron
 
-Note that this Klein-Nishina formula gives the cross section for the scattering off a single \
+Note that the Klein-Nishina formula gives the cross section for the scattering off a single \
 electron.
-In low-energy nuclear physics, one is often interested in the cross section per atom to be able \
+In low-energy nuclear physics, one is often interested in the cross section per atom, to be able \
 to compare this electromagnetic process to the cross sections for nuclear reactions.
 To obtain the cross section for scattering off an atom, the cross section needs to be multiplied \
-by the charge of the atom.
+by the number of electrons per atom.
 
-Attributes
-----------
-Z: int
-    Proton number of the atom.
+Attributes:
 
-[1] O. Klein and Y. Nishina, 'Über die Streuung von Strahlung durch freie Elektronen nach der \
-neuen relativistischen Quantendynamik von Dirac', Z. Phys. 52, 8530868 (1929) https://doi.org/10.1007/BF01366453
+- `Z`: int, number of electrons per atom, which is the proton number for a neutral atom.
     """
     def __init__(self, Z=1):
         """Initialization
         
-Parameters
-----------
-Z: int
-    Proton number of the atom. The default value is 1, which corresponds to scattering off a \
-single electron.
+Parameters:
+
+- `Z`: int, number of electrons per atom, which is the proton number for a neutral atom.
         """
         self.Z = Z
 
-    def __call__(self, energy):
+    def __call__(self, E):
         """Total cross section
 
-This method has been implemented for convenience and basically calls KleinNishina.cs_total(). \
-An additional parameter, the proton number :math:`Z` has been added. \
-This is because a user may be interested in the cross section 'per atom' instead of \
-the one 'per electron'. \
-In this case, the cross section needs to be multiplied by :math:`Z`.
+This method has been implemented for convenience and calls `KleinNishina.cs_total()`.
 
-Parameters
-----------
-e0: array_like or scalar
-    Initial energy of the photon in MeV.
-Z: int
-    Proton number of the scattering atom (default: 1, i.e. scattering on a single electron).
-    
-Returns
--------
-sigma: ndarray or scalar
-    Total cross section in fm**2.
+Parameters:
+
+- E: array_like or scalar, initial energy of the photon in MeV.
+
+Returns:
+
+- array_like or scalar, :math:`\\sigma_\\mathrm{Compton}` in :math:`\\mathrm{fm}^2`.
         """
-        return self.cs_total(energy)
+        return self.cs_total(E)
 
-    def compton_edge(self, e0):
+    def compton_edge(self, E):
         """Compton edge for a given initial photon energy
-        
-        The Compton edge is the lower limit for the energy :math:`E` of the photon after the \
-    scattering process, which follows from the conservation of energy and linear momentum. \
-    It corresponds to scattering by 180°, which means maximum momentum transfer to the electron. \
-    The expression for the Compton edge is given by:
 
-        .. math:: \frac{E_0}{1+2 \frac{E_0}{m c^2}}
+The Compton edge is the lower limit for the energy :math:`E^\\prime` of the photon after the \
+scattering process.
+It follows from the conservation of energy and linear momentum. \
+The limit corresponds to scattering by :math:`180^\\circ`, which means maximum momentum transfer to the electron. \
+The expression for the Compton edge is given by:
+
+.. math:: E^\\prime \\left( E, 180^\\circ \\right) = \\frac{E}{1+2 \\frac{E}{m_e c^2}}
         
-        Here, :math:`m` denotes the mass of the charged particle.
-        
-        Parameters
-        ----------
-        e0: array_like or scalar
-            Initial energy of the photon in MeV.
-        
-        Returns
-        -------
-        ec: array_like or scalar
-            Energy of the Compton edge in MeV.
+Parameters:
+
+- E: array_like or scalar, initial energy of the photon in MeV.
+
+Returns:
+
+- array_like or scalar, energy of the Compton edge in MeV.
         """
         
-        return e0/(1+2*e0/physical_constants['electron mass energy equivalent in MeV'][0])
+        return E/(1+2*E/physical_constants['electron mass energy equivalent in MeV'][0])
         
-    def theta(self, e0, e):
-        """Scattering angle for a given energy transfer
+    def theta(self, E, Ep):
+        """Scattering angle for a given scattered energy
         
-        This function relates the scattering angle :math:`\theta` of the photon to its \
-    initial energy :math:`E_0` and the scattered energy :math:`E`. \
-    For the Compton effect, this relation is unique, and it is given by:
+Parameters:
 
-        ..math:: \\theta = \\arccos \\left[ 1 - \\left( \\frac{E_0}{E} - 1 \\right) \\frac{m c^2}{E_0}  \\right]
-        
-        Here, :math:`m` denotes the mass of the charged particle.
-        
-        Parameters
-        ----------
-        e0: array_like or scalar
-            Initial energy of the photon in MeV.
-        e: array_like or scalar
-            Energy of the photon after the scattering process in MeV.
+- E: array_like or scalar, initial energy of the photon in MeV.
+- Ep: array_like or scalar, energy of the photon after the scattering process in MeV.
 
-        Returns
-        -------
-        theta: ndarray or scalar
-            Polar scattering angle of the photon in radians.
+Returns
+
+- array_like or scalar, scattering angle of the photon in radians.
         """
         return (np.arccos(
-            1-(e0/e-1)*physical_constants['electron mass energy equivalent in MeV'][0]/e0))
+            1-(E/Ep-1)*physical_constants['electron mass energy equivalent in MeV'][0]/E))
 
-    def e_over_e0(self, e0, theta):
-        """Relative energy change of the photon for a given scattering angle
-        
-        This function relates the scattering angle :math:`\theta` to the ratio of \
-    the inital (:math:`E_0`) and the final (:math:`E`) energy of the photon. \
-    For the Compton effect, this relation is unique, and it is given by:
+    def Ep_over_E(self, E, theta):
+        """Ratio of final and initial photon energy for a given scattering angle
 
-        ..math:: \\frac{E}{E_0} = \\frac{1}{1 + \\frac{E_0}{m c^2} \\left[ 1 - \\cos \\left( \\theta \\right) \\right]}
-        
-        Here, :math:`m` denotes the mass of the charged particle.
+Parameters:
 
-        Parameters
-        ----------
-        e0: array_like or scalar
-            Initial energy of the photon in MeV.
-        theta: array_like or scalar
-            Polar scattering angle of the photon in radians.
+- E: array_like or scalar, initial energy of the photon in MeV.
+- theta: array_like or scalar, scattering angle of the photon in radians.
             
-        Returns
-        -------
-        e/e0: ndarray or scalar
-            Ratio of the energy of the scattered photon and its initial energy.
+Returns:
+
+- array_like or scalar, ratio of the energy of the scattered photon and its initial energy.
         """
-        return (1./(1.+e0/physical_constants['electron mass energy equivalent in MeV'][0]
+        return (1./(1.+E/physical_constants['electron mass energy equivalent in MeV'][0]
                     *(1.-np.cos(theta))))
 
     def cs_diff(self, e0, theta):
         """Differential cross section w.r.t. the solid-angle
         
-        This function implements the so-called Klein-Nishina differential cross section for the \
-    scattering of a photon with an initial energy :math:`E_0` off a point-like, charged particle. \
-    The scattered photon has an energy :math:`E`, and is scattered at a polar angle :math:`'\theta`. \
-    Note that the cross section does not depend on the azimuthal angle :math:`\\varphi`. \
-    Explicitly, the differential cross section is given by:
-        
-        .. math:: \\frac{\\mathrm{d} \\sigma}{\\mathrm{d}\\Omega} = \\frac{1}{2}\\frac{\\alpha^2 \\hbar^2}{m^2 c^2} x^2 \\left[ x + \\frac{1}{x} - \\sin \\left( \\theta^2 \\right) \\right]
-        
-        Here, :math:`\\sigma` denotes the cross section, :math:`\\Omega` denotes the \
-        solid-angle element, :math:`\\alpha` is the fine-structure constant, :math:`m` is the 
-        mass of the charged particle, and :math:`x` is an abbreviation for the ratio :math:`E/E_0`.
-        
-        Parameters
-        ----------
-        e0: array_like or scalar
-            Initial energy of the photon in MeV.
-        theta: array_like or scalar
-            Polar scattering angle of the photon in radians.
-            
-        Returns
-        -------
-        d(sigma)/d(Omega) : ndarray or scalar
-            Solid-angle differential cross section for the given initial energy and \
-    scattering angle in fm**2.
+Parameters:
+
+- E: array_like or scalar, initial energy of the photon in MeV.
+- theta: array_like or scalar, scattering angle of the photon in radians.
+
+Returns:
+
+- array_like or scalar, solid-angle differential cross section in fm**2.
         """
-        relative_energy_change = self.e_over_e0(e0, theta)
+        relative_energy_change = self.Ep_over_E(e0, theta)
         return (self.Z*np.pi*physical_constants['fine-structure constant'][0]**2
                 *physical_constants['Planck constant over 2 pi times c in MeV fm'][0]**2
                 /(physical_constants['electron mass energy equivalent in MeV'][0]**2)
@@ -173,99 +170,50 @@ sigma: ndarray or scalar
                 )
             )
 
-    def cs_diff_de(self, e0, e):
+    def cs_diff_de(self, E, Ep):
         """Differential cross section w.r.t. the energy of the scattered photon
         
-        This function implements the energy-differential cross section, which can be obtained \
-    from the solid-angle differential cross section as follows: \
-    First, the dependence on :math:`\\varphi` can be integrated out:
+Parameters:
 
-        .. math: \\int_{0}^{2 \\pi} \\frac{\\mathrm{d} \\sigma}{\\mathrm{d} \\Omega} \\mathrm{d} \\varphi = \\frac{\\mathrm{d} \\sigma}{\\mathrm{d} \\cos \\left( \\theta \\right)}
+- E: array_like or scalar, initial energy of the photon in MeV.
+- Ep: array_like or scalar, energy of the photon after the scattering process in MeV.
 
-    The differential :math:`\\mathrm{d} \\cos \\left( \\theta \\right)` can be uniquely related \
-    to the energy :math:`E` of the scattered photon [see theta() function], which yields:
 
-        .. math: \\mathrm{d} \\cos \\left( \\theta \\right) = \\frac{m c^2}{E^2} \\mathrm{d} E
-        
-        See also the function cs_diff_dtheta.
-        
-        Parameters
-        ----------
-        e0: array_like or scalar
-            Initial energy of the photon in MeV.
-        e: array_like or scalar
-            Energy of the photon after the scattering process in MeV.
+Returns:
 
-        Returns
-        -------
-        d(sigma)/d(E) d(E): ndarray or scalar
-            Energy-differential cross section for the given initial and final energies \
-    in fm**2 MeV**-1.
+- array_like or scalar, energy-differential cross section in :math:`\\mathrm{fm}^2 \\mathrm{MeV}^{-1}`.
         
         """
-        return (self.cs_diff(e0, self.theta(e0, e))
-                *physical_constants['electron mass energy equivalent in MeV'][0]/(e*e))
+        return (self.cs_diff(E, self.theta(E, Ep))
+                *physical_constants['electron mass energy equivalent in MeV'][0]/(Ep*Ep))
 
-    def cs_diff_dtheta(self, e0, theta):
+    def cs_diff_dtheta(self, E, theta):
         """Differential cross section w.r.t. the polar scattering angle
-        
-        This function implements the  polar scattering-angle differential cross section, \
-    which can be obtained from the solid-angle differential cross section by expanding the \
-    differential :math:`\\mathrm{d} \\Omega` in the two angular variables of the sperical \
-    coordinate system, the polar angle :math:`\\theta` and the azimuthal angle \
-    :math:`\\varphi`:
 
-        ..math:: \\mathrm{d} \\Omega = \\sin \\left( \\theta \\right) \\mathrm{d} \\theta \\mathrm{d} \\varphi.
+Parameters:
 
-    Since the cross section is independent of the azimuthal angle
-
-        ..math:: \\frac{\\mathrm{d} \\sigma}{\\mathrm{d} \\varphi} = 0,
-        
-    the polar-angle differential cross section is given by:
-
-        ..math:: \\int_0^\\pi \\mathrm{d} \\theta \\int_0^{2\\pi} \\mathrm{d} \\varphi \\frac{\\mathrm{d}\\sigma}{\\mathrm{d} \\cos \\left( \\theta \\right) \\mathrm{d} \\varphi} \\sin \\left( \\theta \\right) \\
-        = \\int_0^\\pi \\mathrm{d} \\theta \\frac{\\mathrm{d}\\sigma}{\\mathrm{d} \\cos \\left( \\theta \\right)} \\sin \\left( \\theta \\right),
-
-        i.e. the integration over :math:`\\varphi` can simply be dropped, because it results in a :math:`\\theta`-dependent integration constant, which is identified as \
-    :math:`\\mathrm{d} \\sigma / \\mathrm{d} \\cos \\left( \\theta \\right)`.
-
-        See also the function cs_diff_de.
-
-        Parameters
-        ----------
-        e0: array_like or scalar
-            Initial energy of the photon in MeV.
-        theta: array_like or scalar
-            Polar scattering angle of the photon in radians.
+- E: array_like or scalar, initial energy of the photon in MeV.
+- theta: array_like or scalar, scattering angle of the photon in radians.
             
-        Returns
-        -------
-        d(sigma)/d(theta): ndarray or scalar
-            Scattering-angle differential cross section for the given initial energy and scattering angle \
-    in fm**2.
+Returns:
+
+- array_like or scalar, scattering-angle differential cross section in :math:`\\mathrm{fm}^2`.
         """
 
-        return (self.cs_diff(e0, theta)
-                *np.sin(theta) # d(cos(theta)) = sin(theta) dtheta
+        return (self.cs_diff(E, theta)
+                *np.sin(theta)
             )
 
     def cs_total(self, e0):
         """Total cross section
-        
-        This function implements the total cross section for the Compton scattering of a photon with a given initial energy :math:`E_0`.
-        The total cross section is obtained by integrating the energy- (scattering-angle) differential cross section over the \
-    energy (scattering angle) from 0 to infinity (0 to pi). An analytical form for this integral exists, which can be used for \
-    cross checks.
 
-        Parameters
-        ----------
-        e0: array_like or scalar
-            Initial energy of the photon in MeV.
+Parameters:
+
+- E: array_like or scalar, initial energy of the photon in MeV.
             
-        Returns
-        -------
-        sigma: ndarray or scalar
-            Total cross section in fm**2.
+Returns:
+
+array_like or scalar, total cross section in :math:`\\mathrm{fm}^2`.
 
         """
         x = e0/physical_constants['electron mass energy equivalent in MeV'][0]
