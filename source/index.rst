@@ -8,6 +8,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   nonresonant.rst
    klein_nishina.rst
    bibliography.rst
 
