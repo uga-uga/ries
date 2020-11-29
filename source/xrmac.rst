@@ -1,5 +1,5 @@
-XRMAC
-============
+xrmac
+=====
 
 .. automodule:: xrmac
 .. autoclass:: XRMAC

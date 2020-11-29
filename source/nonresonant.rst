@@ -1,5 +1,5 @@
-Nonresonant
-============
+nonresonant
+===========
 
 .. automodule:: nonresonant
 .. autoclass:: Nonresonant

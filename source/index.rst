@@ -3,15 +3,23 @@ Welcome to ries's documentation!
 
 **ries**: resonances integrated over energy and space
 
-Contents:
+Modules
+=======
 
 .. toctree::
    :maxdepth: 2
 
-   nonresonant.rst
    klein_nishina.rst
+   nonresonant.rst
    xrmac.rst
-   bibliography.rst
+
+Bibliography
+============
+
+.. toctree::
+   :maxdepth: 2
+
+   bibliography.rst  
 
 Indices and tables
 ==================
