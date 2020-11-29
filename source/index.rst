@@ -9,6 +9,7 @@ Modules
 .. toctree::
    :maxdepth: 2
 
+   element.rst
    klein_nishina.rst
    nonresonant.rst
    xrmac.rst
