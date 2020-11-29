@@ -10,8 +10,10 @@ Modules
    :maxdepth: 2
 
    element.rst
+   isotope.rst
    klein_nishina.rst
    nonresonant.rst
+   state.rst
    xrmac.rst
 
 Bibliography

@@ -19,6 +19,8 @@ For example, to obtain the proton number of lead, type:
     from ries.constituents.element import natural_elements
 
     print(natural_elements['Pb'].Z)
+
+For a detailed example of how to create a user-defined element, see `tests/boron.py`.
 """
 
 from pathlib import Path
