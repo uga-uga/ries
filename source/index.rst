@@ -10,6 +10,7 @@ Contents:
 
    nonresonant.rst
    klein_nishina.rst
+   xrmac.rst
    bibliography.rst
 
 Indices and tables
