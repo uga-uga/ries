@@ -21,6 +21,9 @@ For example, to obtain the proton number of lead, type:
     print(natural_elements['Pb'].Z)
 
 For a detailed example of how to create a user-defined element, see `tests/boron.py`.
+
+In addition, a dictionary called `X` is available which has the proton number as a key and the \
+element symbol as a value.
 """
 
 from pathlib import Path
@@ -84,7 +87,7 @@ X = nist_element_data_reader.read_nist_element_symbols()
 
 natural_elements = {}
 for Z in range(1, 119):
-    abundances, isotopes = nist_element_data_reader.read_nist_element_data(Z, X[Z])
+    abundances, isotopes = nist_element_data_reader.read_nist_element_data(Z)
     natural_elements[X[Z]] = Element(
         Z, X[Z],
         isotopes, abundances,

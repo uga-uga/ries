@@ -12,6 +12,7 @@ Modules
    element.rst
    isotope.rst
    klein_nishina.rst
+   natural_element_data.rst
    nonresonant.rst
    state.rst
    xrmac.rst
