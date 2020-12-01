@@ -9,6 +9,7 @@ Modules
 .. toctree::
    :maxdepth: 2
 
+   darboux.rst
    element.rst
    isotope.rst
    klein_nishina.rst
