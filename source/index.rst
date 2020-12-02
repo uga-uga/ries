@@ -15,6 +15,7 @@ Modules
    klein_nishina.rst
    natural_element_data.rst
    nonresonant.rst
+   quad_partition.rst
    state.rst
    xrmac.rst
 

@@ -4,8 +4,7 @@ import numpy as np
 from scipy.integrate import quad
 
 from ries.integration.darboux import darboux
-from ries.integration.quad_subintervals import quad_subintervals
-from ries.integration.nquad_subintervals import nquad_subintervals
+from ries.integration.quad_partition import quad_partition
 from ries.resonance.gauss import Gauss
 
 from .boron import B11
@@ -18,16 +17,16 @@ def stagger(x):
 class TestIntegration:
     # Integrate a trivial function to see whether the integration algorithm works.
     @pytest.mark.parametrize('n_points', [(2), (10), (100), (1000)])
-    def test_quad_subinterval(self, n_points):
+    def test_quad_partition(self, n_points):
         assert np.isclose(
-            quad_subintervals(lambda x: 1., np.linspace(0., 1., n_points))[0],
+            quad_partition(lambda x: 1., np.linspace(0., 1., n_points))[0],
             1., rtol = 1e-6
         )
 
     @pytest.mark.parametrize('n_points', [(2), (10), (100), (1000)])
-    def test_nquad_subinterval(self, n_points):
+    def test_nquad_partition(self, n_points):
         assert np.isclose(
-            nquad_subintervals(lambda x, y: 1., np.linspace(0., 1., n_points), [[0., 1.]])[0],
+            quad_partition(lambda x, y: 1., np.linspace(0., 1., n_points), [[0., 1.]])[0],
             1., rtol = 1e-6
         )
 
@@ -69,7 +68,7 @@ class TestIntegration:
         # The problem can be solved by integrating over subintervals whose lenghts are adapted to
         # the function at hand.
         energies = cross_section.equidistant_probability_grid(limits, 2000)
-        cross_section_integral_numerical = quad_subintervals(cross_section, energies)[0]
+        cross_section_integral_numerical = quad_partition(cross_section, energies)[0]
 
         assert np.isclose(cross_section_integral_numerical, cross_section_integral_analytical, rtol=1e-3)
 
@@ -91,6 +90,6 @@ class TestIntegration:
 
         energies = cross_section.equidistant_probability_grid(limits, 250)
         cross_section_integral_analytical = cross_section.energy_integrated_cross_section
-        cross_section_integral_numerical = nquad_subintervals(lambda e, z: cross_section(e), energies, [[0., 1.]])[0]
+        cross_section_integral_numerical = quad_partition(lambda e, z: cross_section(e), energies, [[0., 1.]])[0]
 
         assert np.isclose(cross_section_integral_numerical, cross_section_integral_analytical, rtol=1e-2)
