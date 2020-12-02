@@ -10,7 +10,7 @@ of a nucleus is characterized by its:
 * excitation energy :math:`E_i`
 
 Here, it is assumed that if :math:`i > j`, then :math:`E_i > E_j`.
-In addition, if the state is not the ground state [a]_, it has the properties:
+In addition, if the state is not the ground state [c]_, it has the properties:
 
 * total width :math:`\\Gamma_i`
 * partial widths for the decay to lower-lying states :math:`\\Gamma_{i \\to j}` (:math:`j < i`)
@@ -27,7 +27,7 @@ With these unique identifiers, the partial widths can be implemented as a dictio
 By itself, the `State` class makes no assumptions about the units of its properties, but it is \
 recommended to give energies and widths in :math:`\\mathrm{MeV}`.
 
-[a] For the sake of simplicity, it is assumed that the ground state has no decays, which is \
+.. [c] For the sake of simplicity, it is assumed that the ground state has no decays, which is \
 of course not true in reality. \
 However, since photonuclear reactions with real photons are often only feasible with (quasi-) \
 stable nuclei, this is a valid approximation.

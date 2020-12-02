@@ -9,6 +9,7 @@ Modules
 .. toctree::
    :maxdepth: 2
 
+   cross_section.rst
    darboux.rst
    element.rst
    isotope.rst

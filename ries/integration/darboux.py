@@ -4,7 +4,7 @@
 Given a 1D function :math:`f\\left( x \\right)` and a partition \
 :math:`\\left\{ x_i \\right\}` (:math:`0 \\leq i < n` and \
 :math:`x_i < x_{i+1}` for all `i < n - 1`), the upper and lower Darboux sums \
-:math:`U` and :math:`L` are defined as :cite:`Cortzen2020` [a]_:
+:math:`U` and :math:`L` are defined as :cite:`Cortzen2020` [b]_:
 
 .. math:: U = \sum_{i = 0}^{n - 1} \\sup_{x \in \\left[ x_i, x_{i+1} \\right]} f \\left( x \\right) \\left( x_{i+1} - x_{i} \\right)
 
@@ -31,7 +31,7 @@ Here, the following approximations are made:
 If the partition is fine enough so that :math:`f` is monotonous in all intervals, the \
 approximations give the same results as the Darboux sums.
 
-[a] Using :math:`\\alpha \\left( x \\right) = x` in the notation of Ref. :cite:`Cortzen2020`.
+.. [b] Using :math:`\\alpha \\left( x \\right) = x` in the notation of Ref. :cite:`Cortzen2020`.
 """
 
 import numpy as np

@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 from scipy.constants import physical_constants
 
-from ries.cross_section import ConstantCrossSection, CrossSectionWeightedSum
+from ries.cross_section import CrossSection, ConstantCrossSection, CrossSectionWeightedSum
 from ries.constituents.element import natural_elements
 from ries.nonresonant.xrmac import cm_to_fm, kg_to_g, xrmac
 from ries.resonance.voigt import Voigt
@@ -12,6 +12,16 @@ from ries.resonance.debye_model import effective_temperature_debye_approximation
 from .boron import B11
 
 class TestCrossSection:
+    def test_abstract(self):
+        # The abstract CrossSection class requires the users to implement the functions
+        # CrossSection.__call__() and CrossSection.equal_probability_grid().
+        cross_section = CrossSection()
+
+        with pytest.raises(NotImplementedError):
+            cross_section(1.)
+        with pytest.raises(NotImplementedError):
+            cross_section.equidistant_probability_grid([0., 1.], 10)
+
     def test_algebra(self):
 
         # Create array of all 11B ground-state transitions.
