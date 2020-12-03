@@ -15,8 +15,14 @@ i.e. cross sections can be added.
 Moreover, cross sections can be 'scaled', i.e. multiplied by a scalar constant :math:`c`.
 
 This module implements classes for cross sections with the aforementioned algebraic properties.
-The general cross sections are assumed to be a function of the energy :math:`E` only.
+The general cross sections are assumed to be a function of the kinetic energy :math:`E` of the \
+incident beam particle only.
 Derived classes may introduce dependencies on other parameters.
+The energy :math:`E` is restricted to the range
+
+.. math::`0 \leq E`,
+
+i.e. negative kinetic energies are unphysical.
 
 *Note: At the moment, many of the classes do not perform type checks before executing the algebraic \
 operations. \
