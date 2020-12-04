@@ -49,6 +49,7 @@ from scipy.constants import physical_constants
 from ries.constituents.isotope import Isotope
 from ries.constituents.natural_element_data import NISTElementDataReader
 
+
 class Element:
     """Class representing a chemical element
 
@@ -61,6 +62,7 @@ class Element:
       Must be at least as long as `isotopes`.
     - `amu`, float, effective mass of the element in atomic mass units (AMU).
     """
+
     def __init__(self, Z, X, isotopes, abundances):
         """Initialization
 
@@ -82,7 +84,7 @@ class Element:
 
     def amu_from_isotopic_composition(self, abundances, isotopes):
         """Calculate element mass for a given isotopic composition
-        
+
         Parameters:
 
         - `isotopes`, array of `Isotope` objects, isotopes contained in the chemical element.
@@ -93,17 +95,22 @@ class Element:
 
         float, element mass
         """
-        return np.sum([isotopes[iso].amu*abundances[iso] for iso in isotopes])
+        return np.sum([isotopes[iso].amu * abundances[iso] for iso in isotopes])
 
-# Read the NIST natural elements data supplied with the `ries` repository and create the 
+
+# Read the NIST natural elements data supplied with the `ries` repository and create the
 # `natural_elements` dictionary.
-nist_element_data_reader = NISTElementDataReader(Path(__file__).parent.absolute() / 'nist_elements/elements.txt')
+nist_element_data_reader = NISTElementDataReader(
+    Path(__file__).parent.absolute() / "nist_elements/elements.txt"
+)
 X = nist_element_data_reader.read_nist_element_symbols()
 
 natural_elements = {}
 for Z in range(1, 119):
     abundances, isotopes = nist_element_data_reader.read_nist_element_data(Z)
     natural_elements[X[Z]] = Element(
-        Z, X[Z],
-        isotopes, abundances,
+        Z,
+        X[Z],
+        isotopes,
+        abundances,
     )

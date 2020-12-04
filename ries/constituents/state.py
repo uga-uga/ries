@@ -50,6 +50,7 @@ recommended to give energies and widths in :math:`\mathrm{MeV}`.
 
 from scipy.constants import physical_constants
 
+
 class GroundState:
     """Class representing a ground state
 
@@ -61,9 +62,10 @@ class GroundState:
     - `excitation_energy`, float, excitation energy with respect to the ground state
       (since this class represents the ground state, the excitation energy is zero).
     """
+
     def __init__(self, J_pi, two_J, parity):
         """Initialization
-        
+
         Parameters:
 
         - `J_pi`, str, unique identifier.
@@ -73,7 +75,8 @@ class GroundState:
         self.J_pi = J_pi
         self.two_J = two_J
         self.parity = parity
-        self.excitation_energy = 0.
+        self.excitation_energy = 0.0
+
 
 class State(GroundState):
     """Class representing an excited state
@@ -90,6 +93,7 @@ class State(GroundState):
     - `width`, float, total width.
       This property is inferred from the given partial widths.
     """
+
     def __init__(self, J_pi, two_J, parity, excitation_energy, partial_widths):
         """Initialization
 

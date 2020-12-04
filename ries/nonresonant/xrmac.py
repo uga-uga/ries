@@ -64,6 +64,7 @@ from ries.constituents.element import natural_elements, X
 from ries.cross_section import CrossSection
 from ries.nonresonant.nonresonant import Nonresonant
 
+
 class XRMAC(Nonresonant):
     r"""Nonresonant attenuation cross section based on the x-ray mass attenuation coefficients of Hubbell and Seltzer.
 
@@ -90,7 +91,7 @@ class XRMAC(Nonresonant):
       Hubbell and Seltzer.
     - `energy_conversion` and `xrmac_conversion`, functions to convert the
       energy- and XRMAC data (default: no conversion, i.e. functions that simply return their input).
-      For example, to convert energies from MeV to eV, set 
+      For example, to convert energies from MeV to eV, set
 
       ::
 
@@ -99,10 +100,13 @@ class XRMAC(Nonresonant):
     - `interpolation_log_log`, function which takes a base-10 logarithm of an energy and returns the
       base-10 logarithm of an XRMAC in user-defined units.
     """
-    def __init__(self, data,
+
+    def __init__(
+        self,
+        data,
         energy_conversion=lambda energy: energy,
-        xrmac_conversion=lambda xrmac: xrmac
-        ):
+        xrmac_conversion=lambda xrmac: xrmac,
+    ):
         r"""Initialization
 
         Parameters:
@@ -121,8 +125,7 @@ class XRMAC(Nonresonant):
         if isinstance(data, str):
             data = self.read_nist_xrmac(data)
         self.data = data
-        self.interpolation_log_log = self.interpolate_log_log(
-            self.data)
+        self.interpolation_log_log = self.interpolate_log_log(self.data)
 
     def __call__(self, E):
         r"""Return XRMAC for a given energy.
@@ -137,7 +140,7 @@ class XRMAC(Nonresonant):
 
         - array_like or scalar, XRMAC in user-defined units (Hubbell and Seltzer: :math:`\mathrm{cm}^2 g^{-1}`).
         """
-        return 10**(self.interpolation_log_log(np.log10(E)))
+        return 10 ** (self.interpolation_log_log(np.log10(E)))
 
     def interpolate_log_log(self, data):
         r"""Interpolate base-10 logarithm of data pairs.
@@ -157,9 +160,10 @@ class XRMAC(Nonresonant):
           value of :math:`\log \left( x \right)`.
         """
         return interp1d(
-            np.log10(data[:,0]), np.log10(data[:,1]),
+            np.log10(data[:, 0]),
+            np.log10(data[:, 1]),
             bounds_error=False,
-            fill_value=(np.log10(data[0][1]), np.log10(data[-1][1]))
+            fill_value=(np.log10(data[0][1]), np.log10(data[-1][1])),
         )
 
     def read_nist_xrmac(self, xrmac_file_name):
@@ -199,27 +203,29 @@ class XRMAC(Nonresonant):
         """
         data = []
         skip = 0
-        # Some data files have a three-character column that indicates the label of the atomic 
+        # Some data files have a three-character column that indicates the label of the atomic
         # resonance.
         # Open the file a first time to find out whether this is the case.
         # If yes, skip this column when reading.
-        with open(xrmac_file_name, 'r') as file:
+        with open(xrmac_file_name, "r") as file:
             if not file.readline()[0].isdigit():
                 skip = 3
-        with open(xrmac_file_name, 'r') as file:
+        with open(xrmac_file_name, "r") as file:
             for line in file:
-                line = line[skip:-2].split(sep='  ')
-                data.append([
+                line = line[skip:-2].split(sep="  ")
+                data.append(
+                    [
                         self.energy_conversion(float(line[0])),
                         self.xrmac_conversion(float(line[1])),
-                        self.xrmac_conversion(float(line[2]))
+                        self.xrmac_conversion(float(line[2])),
                     ]
                 )
         return np.array(data)
 
+
 # Read the XRMAC data of Hubbell and Seltzer supplied with the `ries` repository and create the
 # `xrmac` dictionary.
-xrmac_data_dir = Path(__file__).parent.absolute() / '../nonresonant/nist_xrmac/'
+xrmac_data_dir = Path(__file__).parent.absolute() / "../nonresonant/nist_xrmac/"
 
 xrmac = {}
 cm_to_fm = 1e13
@@ -227,6 +233,10 @@ kg_to_g = 1e3
 
 for Z in range(1, 93):
     xrmac[X[Z]] = XRMAC(
-        str(xrmac_data_dir / '{:02d}.txt'.format(Z)),
-        xrmac_conversion=lambda xrmac: xrmac*cm_to_fm**2*natural_elements[X[Z]].amu*physical_constants['atomic mass constant'][0]*kg_to_g
+        str(xrmac_data_dir / "{:02d}.txt".format(Z)),
+        xrmac_conversion=lambda xrmac: xrmac
+        * cm_to_fm ** 2
+        * natural_elements[X[Z]].amu
+        * physical_constants["atomic mass constant"][0]
+        * kg_to_g,
     )

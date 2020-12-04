@@ -51,9 +51,10 @@ approximations give the same results as the Darboux sums.
 
 import numpy as np
 
+
 def darboux(f_or_fx, x):
     r"""Approximate lower and upper Darboux sums assuming a monotonous function
-    
+
     Parameters:
 
     - `f_or_fx`, callable or array of float, either the function :math:`f`, or a set of values
@@ -70,12 +71,12 @@ def darboux(f_or_fx, x):
         fx = f_or_fx(x)
     else:
         fx = f_or_fx
-    lower_upper = np.zeros((2, len(fx)-1))
+    lower_upper = np.zeros((2, len(fx) - 1))
     lower_upper[0] = fx[:-1]
     lower_upper[1] = fx[1:]
-    lower_sum = np.sum(np.min(lower_upper, axis=0)*dx)
-    upper_sum = np.sum(np.max(lower_upper, axis=0)*dx)
+    lower_sum = np.sum(np.min(lower_upper, axis=0) * dx)
+    upper_sum = np.sum(np.max(lower_upper, axis=0) * dx)
     return (
         lower_sum,
-        abs(upper_sum-lower_sum),
+        abs(upper_sum - lower_sum),
     )

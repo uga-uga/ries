@@ -28,9 +28,10 @@ For a detailed example of how to create a user-defined element, see `tests/boron
 
 from scipy.constants import physical_constants
 
+
 class Isotope:
     """Class representing an isotope
-    
+
     Attributes:
 
     - `AX`, str, mass number and element symbol.
@@ -39,8 +40,8 @@ class Isotope:
     - `ground_state`, `State` object, ground state of the isotope.
     - `excited_states`, array of `State` objects, list of excited states of the isotope.
     """
-    def __init__(self, AX, amu, 
-        ground_state=None, excited_states=[]):
+
+    def __init__(self, AX, amu, ground_state=None, excited_states=[]):
         """Initialization
 
         Parameters:

@@ -74,6 +74,7 @@ from scipy.constants import physical_constants
 
 from ries.nonresonant.nonresonant import Nonresonant
 
+
 class KleinNishina(Nonresonant):
     r"""(Differential) Cross section for Compton scattering of a photon off a free charged particle
 
@@ -93,7 +94,10 @@ class KleinNishina(Nonresonant):
     - `mc2`: float, mass energy equivalent (mass times speed of light squared) of the charged particle in :math:`\mathrm{MeV}` (default: rest mass of an electron from `scipy.constants.physical_constants`, i.e.: :math:`m_e c^2 \approx 0.511 \mathrm{MeV}`).
     - `scale_factor`: float, the scale factor of the Klein-Nishina cross section that is independent of the kinematics, i.e. :math:`Z \alpha^2 \hbar^2 / \left( m^2 c^2 \right)`.
     """
-    def __init__(self, Z=1, mc2=physical_constants['electron mass energy equivalent in MeV'][0]):
+
+    def __init__(
+        self, Z=1, mc2=physical_constants["electron mass energy equivalent in MeV"][0]
+    ):
         r"""Initialization
 
         Parameters:
@@ -104,9 +108,10 @@ class KleinNishina(Nonresonant):
         self.Z = Z
         self.mc2 = mc2
         self.scale_factor = (
-            self.Z*physical_constants['fine-structure constant'][0]**2
-            *physical_constants['Planck constant over 2 pi times c in MeV fm'][0]**2
-            /(self.mc2*self.mc2)
+            self.Z
+            * physical_constants["fine-structure constant"][0] ** 2
+            * physical_constants["Planck constant over 2 pi times c in MeV fm"][0] ** 2
+            / (self.mc2 * self.mc2)
         )
 
     def __call__(self, E):
@@ -134,7 +139,7 @@ class KleinNishina(Nonresonant):
         The expression for the Compton edge is given by:
 
         .. math:: E^\prime \left( E, 180^\circ \right) = \frac{E}{1+2 \frac{E}{m c^2}}
-                
+
         Parameters:
 
         - E: array_like or scalar, initial energy of the photon in MeV.
@@ -144,11 +149,11 @@ class KleinNishina(Nonresonant):
         - array_like or scalar, energy of the Compton edge in MeV.
         """
 
-        return self.Ep_over_E(E, np.pi)*E
+        return self.Ep_over_E(E, np.pi) * E
 
     def theta(self, E, Ep):
         """Scattering angle for a given scattered energy
-        
+
         Parameters:
 
         - E: array_like or scalar, initial energy of the photon in MeV.
@@ -158,8 +163,12 @@ class KleinNishina(Nonresonant):
 
         - array_like or scalar, scattering angle of the photon in radians.
         """
-        return (np.arccos(
-            1-(E/Ep-1)*physical_constants['electron mass energy equivalent in MeV'][0]/E))
+        return np.arccos(
+            1
+            - (E / Ep - 1)
+            * physical_constants["electron mass energy equivalent in MeV"][0]
+            / E
+        )
 
     def Ep_over_E(self, E, theta):
         """Ratio of final and initial photon energy for a given scattering angle
@@ -168,13 +177,17 @@ class KleinNishina(Nonresonant):
 
         - E: array_like or scalar, initial energy of the photon in MeV.
         - theta: array_like or scalar, scattering angle of the photon in radians.
-                    
+
         Returns:
 
         - array_like or scalar, ratio of the energy of the scattered photon and its initial energy.
         """
-        return (1./(1.+E/physical_constants['electron mass energy equivalent in MeV'][0]
-                    *(1.-np.cos(theta))))
+        return 1.0 / (
+            1.0
+            + E
+            / physical_constants["electron mass energy equivalent in MeV"][0]
+            * (1.0 - np.cos(theta))
+        )
 
     def cs_diff_dOmega(self, E, theta, phi):
         """Differential cross section w.r.t. the solid-angle
@@ -190,11 +203,17 @@ class KleinNishina(Nonresonant):
         - array_like or scalar, solid-angle differential cross section in fm**2.
         """
         relative_energy_change = self.Ep_over_E(E, theta)
-        return (0.5*self.scale_factor
-                *relative_energy_change*relative_energy_change*(
-                    relative_energy_change + 1./relative_energy_change - 2.*np.sin(theta)**2*np.cos(phi)**2
-                )
+        return (
+            0.5
+            * self.scale_factor
+            * relative_energy_change
+            * relative_energy_change
+            * (
+                relative_energy_change
+                + 1.0 / relative_energy_change
+                - 2.0 * np.sin(theta) ** 2 * np.cos(phi) ** 2
             )
+        )
 
     def cs_diff_dOmega_unpolarized(self, E, theta):
         """Differential cross section w.r.t. the solid-angle for an unpolarized incoming photon
@@ -210,15 +229,21 @@ class KleinNishina(Nonresonant):
         """
 
         relative_energy_change = self.Ep_over_E(E, theta)
-        return (np.pi*self.scale_factor
-                *relative_energy_change*relative_energy_change*(
-                    relative_energy_change + 1./relative_energy_change - np.sin(theta)**2
-                )
+        return (
+            np.pi
+            * self.scale_factor
+            * relative_energy_change
+            * relative_energy_change
+            * (
+                relative_energy_change
+                + 1.0 / relative_energy_change
+                - np.sin(theta) ** 2
             )
+        )
 
     def cs_diff_dEp_dphi(self, E, Ep, phi):
         r"""Differential cross section w.r.t. the energy of the scattered photon and the azimuthal angle
-        
+
         Parameters:
 
         - E: array_like or scalar, initial energy of the photon in MeV.
@@ -227,14 +252,17 @@ class KleinNishina(Nonresonant):
 
         Returns:
 
-        - array_like or scalar, energy-differential cross section in :math:`\mathrm{fm}^2 \mathrm{MeV}^{-1}`. 
+        - array_like or scalar, energy-differential cross section in :math:`\mathrm{fm}^2 \mathrm{MeV}^{-1}`.
         """
-        return (self.cs_diff_dOmega(E, self.theta(E, Ep), phi)
-                *physical_constants['electron mass energy equivalent in MeV'][0]/(Ep*Ep))
+        return (
+            self.cs_diff_dOmega(E, self.theta(E, Ep), phi)
+            * physical_constants["electron mass energy equivalent in MeV"][0]
+            / (Ep * Ep)
+        )
 
     def cs_diff_dEp(self, E, Ep):
         r"""Differential cross section w.r.t. the energy of the scattered photon for an unpolarized incoming photon
-        
+
         Parameters:
 
         - E: array_like or scalar, initial energy of the photon in MeV.
@@ -244,8 +272,11 @@ class KleinNishina(Nonresonant):
 
         - array_like or scalar, energy-differential cross section in :math:`\mathrm{fm}^2 \mathrm{MeV}^{-1}`.
         """
-        return (self.cs_diff_dOmega_unpolarized(E, self.theta(E, Ep))
-                *physical_constants['electron mass energy equivalent in MeV'][0]/(Ep*Ep))
+        return (
+            self.cs_diff_dOmega_unpolarized(E, self.theta(E, Ep))
+            * physical_constants["electron mass energy equivalent in MeV"][0]
+            / (Ep * Ep)
+        )
 
     def cs_diff_dtheta(self, E, theta):
         r"""Differential cross section w.r.t. the polar scattering angle for an unpolarized incoming photon
@@ -260,9 +291,7 @@ class KleinNishina(Nonresonant):
         - array_like or scalar, scattering-angle differential cross section in :math:`\mathrm{fm}^2`.
         """
 
-        return (self.cs_diff_dOmega_unpolarized(E, theta)
-                *np.sin(theta)
-            )
+        return self.cs_diff_dOmega_unpolarized(E, theta) * np.sin(theta)
 
     def cs_total(self, E):
         r"""Total cross section
@@ -270,13 +299,18 @@ class KleinNishina(Nonresonant):
         Parameters:
 
         - E: array_like or scalar, initial energy of the photon in MeV.
-                    
+
         Returns:
 
         - array_like or scalar, total cross section in :math:`\mathrm{fm}^2`.
         """
-        x = E/self.mc2
-        return (np.pi*self.scale_factor
-                *x**-3
-                *((2*x*(2+x*(1+x)*(8+x)))/((1+2*x)**2)+((x-2)*x-2)*np.log(1+2*x))
+        x = E / self.mc2
+        return (
+            np.pi
+            * self.scale_factor
+            * x ** -3
+            * (
+                (2 * x * (2 + x * (1 + x) * (8 + x))) / ((1 + 2 * x) ** 2)
+                + ((x - 2) * x - 2) * np.log(1 + 2 * x)
             )
+        )

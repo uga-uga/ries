@@ -31,9 +31,10 @@ module into a dictionary called `natural_elements`.
 
 from ries.constituents.isotope import Isotope
 
+
 class NISTElementDataReader:
     """Class to parse a list of chemical elements by NIST in the 'Linearized ASCII Output' format
-    
+
     The data file consists of multiline paragraphs for each isotope.
     Each line has a syntax like
 
@@ -41,7 +42,7 @@ class NISTElementDataReader:
 
         PROPERTY = VALUE
 
-    or 
+    or
 
     ::
 
@@ -56,14 +57,15 @@ class NISTElementDataReader:
     - `*_prefix`, str, prefixes of the type 'PROPERTY = ' that identify the lines to be read by the
       `NISTElementDataReader`.
     """
+
     def __init__(self, element_data_file_name):
         self.element_data_file_name = element_data_file_name
 
-        self.Z_prefix = 'Atomic Number = '
-        self.A_prefix = 'Mass Number = '
-        self.X_prefix = 'Atomic Symbol = '
-        self.amu_prefix = 'Relative Atomic Mass = '
-        self.abundance_prefix = 'Isotopic Composition = '
+        self.Z_prefix = "Atomic Number = "
+        self.A_prefix = "Mass Number = "
+        self.X_prefix = "Atomic Symbol = "
+        self.amu_prefix = "Relative Atomic Mass = "
+        self.abundance_prefix = "Isotopic Composition = "
 
     def read_nist_element_data(self, Z):
         """Find all isotopes and abundances for a given element.
@@ -83,10 +85,12 @@ class NISTElementDataReader:
         """
         abundances = {}
         isotopes = {}
-        with open(self.element_data_file_name, 'r') as file:
+        with open(self.element_data_file_name, "r") as file:
             for line in file:
                 if self.Z_prefix in line:
-                    current_Z = self.read_nist_element_property(line, self.Z_prefix, int)
+                    current_Z = self.read_nist_element_property(
+                        line, self.Z_prefix, int
+                    )
                     if current_Z < Z:
                         continue
                     elif current_Z > Z:
@@ -96,18 +100,22 @@ class NISTElementDataReader:
                 elif self.A_prefix in line and current_Z == Z:
                     A = self.read_nist_element_property(line, self.A_prefix, int)
                 elif self.amu_prefix in line and current_Z == Z:
-                    amu = self.read_nist_element_property_with_uncertainty(line, self.amu_prefix)
+                    amu = self.read_nist_element_property_with_uncertainty(
+                        line, self.amu_prefix
+                    )
                 elif self.abundance_prefix in line and current_Z == Z:
-                    abundance = self.read_nist_element_property_with_uncertainty(line, self.abundance_prefix, default=1.)
-                    AX = '{:d}{}'.format(A, X)
+                    abundance = self.read_nist_element_property_with_uncertainty(
+                        line, self.abundance_prefix, default=1.0
+                    )
+                    AX = "{:d}{}".format(A, X)
                     abundances[AX] = abundance
                     isotopes[AX] = Isotope(AX, amu)
-        
+
         return (abundances, isotopes)
 
     def read_nist_element_property(self, line, prefix, property_type=str, default=None):
         """Read the value of a single property from a line
-        
+
         Parameters:
 
         - `line`, str, line from which to read the value.
@@ -120,16 +128,18 @@ class NISTElementDataReader:
 
         - value of type `property_type` or `default`.
         """
-        prop = line[len(prefix):-1] # Take all characters except the last two, which are the newline
+        prop = line[
+            len(prefix) : -1
+        ]  # Take all characters except the last two, which are the newline
         # escape sequence '\n'.
-        if prop != '':
+        if prop != "":
             return property_type(prop)
         return default
 
     def read_nist_element_property_with_uncertainty(self, line, prefix, default=None):
         """Read a floating-point value from a line that also contains an uncertainty
-        
-        Given a line like 
+
+        Given a line like
 
         ::
 
@@ -149,12 +159,12 @@ class NISTElementDataReader:
         - float, value
         """
         return self.read_nist_element_property(
-            line[0:line.find('(')+1], prefix, float, default
+            line[0 : line.find("(") + 1], prefix, float, default
         )
 
     def read_nist_element_symbols(self):
         """Find all element symbols in the data file and organize them in a dictionary.
-        
+
         This functions loops over the data file and finds all unique element symbols.
         They will be collected in a dictionary such that the proton number is the key, and the element
         symbol the value.
@@ -170,7 +180,7 @@ class NISTElementDataReader:
         - dictionary with element symbols as keys and proton numbers as values.
         """
         X = {}
-        with open(self.element_data_file_name, 'r') as file:
+        with open(self.element_data_file_name, "r") as file:
             for line in file:
                 if self.Z_prefix in line:
                     Z = self.read_nist_element_property(line, self.Z_prefix, int)

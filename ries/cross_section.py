@@ -66,19 +66,20 @@ from warnings import warn
 
 import numpy as np
 
+
 class CrossSection:
     """Energy-dependent cross section for a reaction"""
 
     def __call__(self, E):
         """Evaluate the cross section for a given energy of the incident beam particle
-        
+
         See `CrossSectionWeightedSum.__call__()`.
         """
         raise NotImplementedError
 
     def __add__(self, other):
         """Addition of cross sections
-        
+
         See `CrossSectionWeightedSum.__add__()`.
         """
         if isinstance(other, (int, float)):
@@ -87,7 +88,7 @@ class CrossSection:
 
     def __radd__(self, other):
         """Addition of cross sections
-        
+
         See `self.__add__()`.
         """
         return self.__add__(other)
@@ -103,14 +104,14 @@ class CrossSection:
 
     def __rmul__(self, other):
         """Multiplication of cross sections with a scalar
-        
+
         See `self.__mul__()`.
         """
         return self.__mul__(other)
 
     def equidistant_energy_grid(self, limits, n_points):
         r"""Create an equidistant grid in a given 1D energy range
-        
+
         Given a pair of limits :math:`E_0` and :math:`E_{n-1}` and a number of points :math:`n`, this
         function returns a set of :math:`n` energies :math:`\left\{ E_i \right\}` such that
 
@@ -133,12 +134,12 @@ class CrossSection:
 
     def equidistant_probability_grid(self, limits, n_points):
         r"""Create a grid with equal reaction probabilities per interval
-        
+
         If the energy-integrated cross section :math:`I_r` of a reaction is finite, i.e.
 
         .. math:: \int_0^{\infty} \sigma_r \left( E \right) \mathrm{d} E \equiv I_r < \infty,
 
-        the function 
+        the function
 
         .. math:: \frac{\sigma_r \left( E \right)}{I_r}
 
@@ -148,7 +149,7 @@ class CrossSection:
 
         .. math :: E_{i + 1} > E_i
 
-        and 
+        and
 
         .. math :: \int_{E_i}^{E_{i+1}} \sigma_r \left( E \right) \mathrm{d} E = \int_{E_j}^{E_{j+1}} \sigma_r \left( E \right) \mathrm{d} E
 
@@ -170,36 +171,39 @@ class CrossSection:
         """
         raise NotImplementedError
 
+
 class ConstantCrossSection(CrossSection):
     """Class for a constant cross section
-    
-'Constant' means that the cross section is the same for all energies.
-In particular, this means that the energy-integrated cross section is not finite.
 
-Attributes:
+    'Constant' means that the cross section is the same for all energies.
+    In particular, this means that the energy-integrated cross section is not finite.
 
-- `constant`, scalar, constant value of the cross section.
+    Attributes:
+
+    - `constant`, scalar, constant value of the cross section.
     """
+
     def __init__(self, constant):
         self.constant = constant
 
     def __call__(self, energy):
         """Evaluate the cross section for a given energy of the incident beam particle
-        
-See also `CrossSection.__call__()`.
+
+        See also `CrossSection.__call__()`.
         """
         return self.constant
 
     def equidistant_probability_grid(self, limits, n_points):
         """Create an equidistant-probability grid in a given 1D energy range
-        
-See also `CrossSection.equidistant_probability_grid()`.
+
+        See also `CrossSection.equidistant_probability_grid()`.
         """
         return np.linspace(*limits, n_points)
 
+
 class CrossSectionWeightedSum:
     """Weighted sum of multiple energy-dependent cross sections
-    
+
     Internally, a list of `CrossSection` objects and a list of scale factors with the same length
     are stored.
 
@@ -211,7 +215,7 @@ class CrossSectionWeightedSum:
 
     def __init__(self, reactions=[], scale_factors=None):
         """Initialization
-        
+
         Parameters:
 
         - `reactions`, list of `CrossSection` objects, all cross sections that contribute to the weighted sum.
@@ -219,7 +223,7 @@ class CrossSectionWeightedSum:
         """
         self.reactions = reactions
         if scale_factors is None:
-            scale_factors = [1.]*len(reactions)
+            scale_factors = [1.0] * len(reactions)
         self.scale_factors = scale_factors
 
     def __add__(self, other):
@@ -252,10 +256,10 @@ class CrossSectionWeightedSum:
 
         if isinstance(other, (int, float)):
             reactions.append(ConstantCrossSection(other))
-            scale_factors.append(1.)
+            scale_factors.append(1.0)
         elif isinstance(other, CrossSection):
             reactions.append(other)
-            scale_factors.append(1.)
+            scale_factors.append(1.0)
         else:
             for i, reaction in enumerate(other.reactions):
                 reactions.append(reaction)
@@ -265,7 +269,7 @@ class CrossSectionWeightedSum:
 
     def __radd__(self, other):
         """Addition of cross sections
-        
+
         See `self.__add__()`.
         """
         return self.__add__(other)
@@ -288,7 +292,7 @@ class CrossSectionWeightedSum:
         scale_factors = []
         for i, reaction in enumerate(self.reactions):
             reactions.append(reaction)
-            scale_factors.append(other*self.scale_factors[i])
+            scale_factors.append(other * self.scale_factors[i])
         return CrossSectionWeightedSum(reactions, scale_factors)
 
     def __rmul__(self, other):
@@ -312,10 +316,10 @@ class CrossSectionWeightedSum:
 
         - float or array_like, value of the cross section at the given energy.
         """
-        cross_section = 0.
+        cross_section = 0.0
 
         for i, reaction in enumerate(self.reactions):
-            cross_section += self.scale_factors[i]*reaction(energy)
+            cross_section += self.scale_factors[i] * reaction(energy)
 
         return cross_section
 
@@ -351,6 +355,10 @@ class CrossSectionWeightedSum:
         """
         grid = []
         for reaction in self.reactions:
-            grid.append(reaction.equidistant_probability_grid(limits, n_points_per_cross_section))
+            grid.append(
+                reaction.equidistant_probability_grid(
+                    limits, n_points_per_cross_section
+                )
+            )
         grid = list(chain(*grid))
         return np.unique(grid)

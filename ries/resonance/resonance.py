@@ -156,6 +156,7 @@ from scipy.stats import uniform
 from ries.cross_section import CrossSection
 from ries.resonance.recoil import NoRecoil
 
+
 class Resonance(CrossSection):
     r"""Class for a resonance cross section that can be modeled by a continuous probability distribution.
 
@@ -191,10 +192,16 @@ class Resonance(CrossSection):
       probability distribution (default: parameters for a uniform distribution that create a box-shaped
       cross section around the resonance energy).
     """
-    def __init__(self, initial_state, intermediate_state,
-        final_state=None, recoil_correction=NoRecoil()):
+
+    def __init__(
+        self,
+        initial_state,
+        intermediate_state,
+        final_state=None,
+        recoil_correction=NoRecoil(),
+    ):
         """Initialization
-        
+
         Parameters:
 
         - `*_state`, `State` objects, initial (0), intermediate (2), and final (1) state of the reaction.
@@ -206,18 +213,25 @@ class Resonance(CrossSection):
         self.intermediate_state = intermediate_state
         self.final_state = final_state
 
-        self.resonance_energy = recoil_correction(self.intermediate_state.excitation_energy - self.initial_state.excitation_energy)
-        self.energy_integrated_cross_section_constant = (np.pi*physical_constants['reduced Planck constant times c in MeV fm'][0])**2
+        self.resonance_energy = recoil_correction(
+            self.intermediate_state.excitation_energy
+            - self.initial_state.excitation_energy
+        )
+        self.energy_integrated_cross_section_constant = (
+            np.pi * physical_constants["reduced Planck constant times c in MeV fm"][0]
+        ) ** 2
         self.statistical_factor = self.get_statistical_factor()
         self.final_state_branching_ratio = self.get_final_state_branching_ratio()
-        self.energy_integrated_cross_section = self.get_energy_integrated_cross_section()
+        self.energy_integrated_cross_section = (
+            self.get_energy_integrated_cross_section()
+        )
 
         self.probability_distribution = uniform
-        self.probability_distribution_parameters = (self.resonance_energy-0.5, 1.)
+        self.probability_distribution_parameters = (self.resonance_energy - 0.5, 1.0)
 
     def __call__(self, E, input_is_absolute_energy=True):
         r"""Evaluate the cross section for a given energy of the incident photon
-        
+
         Parameters:
 
         - `E`, float or array_like, energy of the incident beam particle in MeV.
@@ -232,11 +246,13 @@ class Resonance(CrossSection):
         """
         if not input_is_absolute_energy:
             E = E + self.resonance_energy
-        return self.energy_integrated_cross_section*self.probability_distribution.pdf(E, *self.probability_distribution_parameters)
+        return self.energy_integrated_cross_section * self.probability_distribution.pdf(
+            E, *self.probability_distribution_parameters
+        )
 
     def coverage_interval(self, coverage):
         r"""Return energy range that covers a given percentage of the cross section
-        
+
         Given a required coverage :math:`0 \leq c \leq 1`, this function returns an energy interval around
         the median of the distribution that includes :math:`c/2` of the probability mass left of the median
         and :math:`c/2` right of the median, i.e. it leaves out the possibly infinite limits of the
@@ -251,13 +267,13 @@ class Resonance(CrossSection):
         - pair of float, limits of the energy range.
         """
         return self.probability_distribution.ppf(
-            0.5*np.array([1. - coverage, 1.+coverage]),
-            *self.probability_distribution_parameters
+            0.5 * np.array([1.0 - coverage, 1.0 + coverage]),
+            *self.probability_distribution_parameters,
         )
 
     def equidistant_energy_grid(self, coverage_or_limits, n_points):
         """Create an equidistant grid in a given 1D energy range or with a given coverage
-        
+
         Extends the functionality of `CrossSection.equidistant_energy_grid`.
         It is now possible to request a certain coverage instead of giving the energy range explicitly.
 
@@ -292,17 +308,22 @@ class Resonance(CrossSection):
         - ndarray, array of grid points
         """
         if isinstance(coverage_or_limits, (int, float)):
-            limits = (0.5*(1.-coverage_or_limits), 0.5*(1.+coverage_or_limits))
+            limits = (
+                0.5 * (1.0 - coverage_or_limits),
+                0.5 * (1.0 + coverage_or_limits),
+            )
         else:
-            limits = self.probability_distribution.cdf(coverage_or_limits, *self.probability_distribution_parameters)
+            limits = self.probability_distribution.cdf(
+                coverage_or_limits, *self.probability_distribution_parameters
+            )
         equ_dis_pro_grid = self.probability_distribution.ppf(
             np.linspace(limits[0], limits[1], n_points),
-            *self.probability_distribution_parameters
+            *self.probability_distribution_parameters,
         )
         # This last if clause prevents rounding errors.
-        # For finite limits that are very far away from the resonance energy, 
-        # probability_distribution.cdf() may return 0 or 1 instead of 0.000... or 0.999..., 
-        # which would then cause probability_distribution.ppf to return -np.inf or np.inf as 
+        # For finite limits that are very far away from the resonance energy,
+        # probability_distribution.cdf() may return 0 or 1 instead of 0.000... or 0.999...,
+        # which would then cause probability_distribution.ppf to return -np.inf or np.inf as
         # limits of the grid instead of the given values.
         if not isinstance(coverage_or_limits, (int, float)):
             equ_dis_pro_grid[0] = coverage_or_limits[0]
@@ -312,28 +333,26 @@ class Resonance(CrossSection):
     def get_energy_integrated_cross_section(self):
         return (
             self.energy_integrated_cross_section_constant
-            /((self.resonance_energy)**2)
-            *self.statistical_factor
-            *self.intermediate_state.partial_widths[self.initial_state.J_pi]
-            *self.final_state_branching_ratio
+            / ((self.resonance_energy) ** 2)
+            * self.statistical_factor
+            * self.intermediate_state.partial_widths[self.initial_state.J_pi]
+            * self.final_state_branching_ratio
         )
 
     def get_final_state_branching_ratio(self):
         """Calculate the branching ratio for the decay to an optional final state
-        
+
         If no final state is given, returns 1.
         """
         if self.final_state is None:
-            return 1.
+            return 1.0
         return (
             self.intermediate_state.partial_widths[self.final_state.J_pi]
-            /self.intermediate_state.width)
+            / self.intermediate_state.width
+        )
 
     def get_statistical_factor(self):
         """Calculate the statistical factor for the excitation using properties of the initial
         and the intermediate state.
         """
-        return (
-            (self.intermediate_state.two_J+1.)
-            /(self.initial_state.two_J+1.)
-        )
+        return (self.intermediate_state.two_J + 1.0) / (self.initial_state.two_J + 1.0)

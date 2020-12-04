@@ -19,9 +19,16 @@ from scipy.stats import norm
 
 from ries.resonance.resonance import Resonance
 
+
 class Gauss(Resonance):
-    def __init__(self, initial_state, intermediate_state, amu, effective_temperature,
-        final_state=None):
+    def __init__(
+        self,
+        initial_state,
+        intermediate_state,
+        amu,
+        effective_temperature,
+        final_state=None,
+    ):
         Resonance.__init__(self, initial_state, intermediate_state, final_state)
 
         self.amu = amu
@@ -31,12 +38,17 @@ class Gauss(Resonance):
         self.probability_distribution = norm
         self.probability_distribution_parameters = (
             self.resonance_energy,
-            self.doppler_width/np.sqrt(2.)
+            self.doppler_width / np.sqrt(2.0),
         )
 
     def get_doppler_width(self):
-        return self.resonance_energy*np.sqrt(
-            2.*physical_constants['Boltzmann constant in eV/K'][0]*1e-6*self.effective_temperature/(
-                self.amu*physical_constants['atomic mass constant energy equivalent in MeV'][0]
+        return self.resonance_energy * np.sqrt(
+            2.0
+            * physical_constants["Boltzmann constant in eV/K"][0]
+            * 1e-6
+            * self.effective_temperature
+            / (
+                self.amu
+                * physical_constants["atomic mass constant energy equivalent in MeV"][0]
             )
         )

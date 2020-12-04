@@ -40,15 +40,17 @@ different :cite:`Lamb1939` :cite:`Moessbauer1958`.
 """
 from scipy.constants import physical_constants
 
+
 class Recoil:
     """Abstract class for a recoil correction"""
+
     def __init__(self):
         """Initialization"""
         pass
 
     def __call__(self, energy_difference):
         """Recoil-corrected resonance energy
-        
+
         Paramters:
 
         - `energy_difference`, float, energy difference between two nuclear states, which would be the
@@ -60,11 +62,14 @@ class Recoil:
         """
         return energy_difference
 
+
 class NoRecoil(Recoil):
     """Dummy class for negligible recoil correction"""
+
     def __init__(self):
         """Initialization"""
         Recoil.__init__(self)
+
 
 class FreeNucleusRecoil(Recoil):
     r"""Recoil correction for a free nucleus at rest
@@ -95,9 +100,10 @@ class FreeNucleusRecoil(Recoil):
 
     - `amu`, float, mass of the nucleus in atomic mass units.
     """
+
     def __init__(self, amu):
         """Initialization
-        
+
         Parameters:
 
         - `amu`, float, mass of the nucleus in atomic mass units.
@@ -106,12 +112,15 @@ class FreeNucleusRecoil(Recoil):
 
     def __call__(self, energy_difference):
         """Recoil-corrected resonance energy
-        
+
         See `Recoil.__call__()`.
         """
-        return (
-            energy_difference*(
-                1.+energy_difference
-                /(2.*self.amu*physical_constants['atomic mass constant energy equivalent in MeV'][0])
+        return energy_difference * (
+            1.0
+            + energy_difference
+            / (
+                2.0
+                * self.amu
+                * physical_constants["atomic mass constant energy equivalent in MeV"][0]
             )
         )

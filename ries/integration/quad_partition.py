@@ -50,9 +50,10 @@ The total error returned by `quad_partition` is:
 import numpy as np
 from scipy.integrate import quad, nquad
 
+
 def quad_partition(f, x0, x1_to_xn_minus_1=[]):
     r"""Multidimensional numerical integration with a partitioned first coordinate
-    
+
     Parameters:
 
     - `f`, callable, multidimensional function :math:`f`.
@@ -64,12 +65,12 @@ def quad_partition(f, x0, x1_to_xn_minus_1=[]):
 
     - (float, float), integral and absolute error estimate.
     """
-    integral = 0.
-    uncertainty_estimate = 0.
+    integral = 0.0
+    uncertainty_estimate = 0.0
 
-    for i in range(len(x0)-1):
-        nquad_result = nquad(f, [[x0[i], x0[i+1]], *x1_to_xn_minus_1])
+    for i in range(len(x0) - 1):
+        nquad_result = nquad(f, [[x0[i], x0[i + 1]], *x1_to_xn_minus_1])
         integral += nquad_result[0]
-        uncertainty_estimate += nquad_result[1]*nquad_result[1]
+        uncertainty_estimate += nquad_result[1] * nquad_result[1]
 
     return (integral, np.sqrt(uncertainty_estimate))
