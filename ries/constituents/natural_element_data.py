@@ -13,19 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with ries.  If not, see <https://www.gnu.org/licenses/>.
 
-"""
-The National Institute of Standards and Technology (NIST) provides a list of \
-'Atomic Weights and Isotopic Compositions with Relative Atomic Masses' :cite:`Coursey2015` \
+r"""
+The National Institute of Standards and Technology (NIST) provides a list of
+'Atomic Weights and Isotopic Compositions with Relative Atomic Masses' :cite:`Coursey2015`
 which includes most of the known chemical elements.
-Except for the element hydrogen, where the isotope tritium is included as well, the list contains \
-all naturally occurring (i.e. :math:`x \\left( ^A\\mathrm{X} \\right) \\neq 0`) isotopes of \
+Except for the element hydrogen, where the isotope tritium is included as well, the list contains
+all naturally occurring (i.e. :math:`x \left( ^A\mathrm{X} \right) \neq 0`) isotopes of
 'stable elements' (i.e. elements with at least one stable isotope).
-For unstable elements like technetium, which cannot be found in nature, the authors of \
+For unstable elements like technetium, which cannot be found in nature, the authors of
 Ref. :cite:`Coursey2015` appear to have selected the isotopes with the longest half-lives.
 
-The code in this module reads the 'Linearized ASCII Output' from the NIST web page and creates \
+The code in this module reads the 'Linearized ASCII Output' from the NIST web page and creates
 a list of `Isotope` objects for use in the `ries` code.
-A copy of the data file is distributed in the `ries` repository and loaded in the `element` \
+A copy of the data file is distributed in the `ries` repository and loaded in the `element`
 module into a dictionary called `natural_elements`.
 """
 
@@ -34,27 +34,27 @@ from ries.constituents.isotope import Isotope
 class NISTElementDataReader:
     """Class to parse a list of chemical elements by NIST in the 'Linearized ASCII Output' format
     
-The data file consists of multiline paragraphs for each isotope.
-Each line has a syntax like
+    The data file consists of multiline paragraphs for each isotope.
+    Each line has a syntax like
 
-::
+    ::
 
-    PROPERTY = VALUE
+        PROPERTY = VALUE
 
-or 
+    or 
 
-::
+    ::
 
-    PROPERTY = VALUE(UNCERTAINTY)
+        PROPERTY = VALUE(UNCERTAINTY)
 
-The `NISTElementDataReader` provides methods to find all isotopes of a given element in the list \
-and read some of their properties.
+    The `NISTElementDataReader` provides methods to find all isotopes of a given element in the list
+    and read some of their properties.
 
-Attributes:
+    Attributes:
 
-- `element_data_file_name`, str, name of the ASCII file.
-- `*_prefix`, str, prefixes of the type 'PROPERTY = ' that identify the lines to be read by the \
-`NISTElementDataReader`.
+    - `element_data_file_name`, str, name of the ASCII file.
+    - `*_prefix`, str, prefixes of the type 'PROPERTY = ' that identify the lines to be read by the
+      `NISTElementDataReader`.
     """
     def __init__(self, element_data_file_name):
         self.element_data_file_name = element_data_file_name
@@ -68,18 +68,18 @@ Attributes:
     def read_nist_element_data(self, Z):
         """Find all isotopes and abundances for a given element.
 
-This function loops over the data file, finds all paragraphs for a given Z, and reads the isotope \
-data.
-In the following, let :math:`n_A(Z)` denote the number of isotopes per element in the data file.
+        This function loops over the data file, finds all paragraphs for a given Z, and reads the isotope
+        data.
+        In the following, let :math:`n_A(Z)` denote the number of isotopes per element in the data file.
 
-Parameters:
+        Parameters:
 
-- `Z`, int, proton number of the element of interest.
+        - `Z`, int, proton number of the element of interest.
 
-Returns:
+        Returns:
 
-- (n,1) array of float, list of isotopic abundances.
-- (n,1) array of `Isotope` objects, list of isotopes.
+        - (n,1) array of float, list of isotopic abundances.
+        - (n,1) array of `Isotope` objects, list of isotopes.
         """
         abundances = {}
         isotopes = {}
@@ -108,17 +108,17 @@ Returns:
     def read_nist_element_property(self, line, prefix, property_type=str, default=None):
         """Read the value of a single property from a line
         
-Parameters:
+        Parameters:
 
-- `line`, str, line from which to read the value.
-- `prefix`, str, prefix that identifies the property.
-- `property`, type, type of the value. \
-This information will be used to cast the value string extracted from `line` to the correct type.
-- `default`, default value to be returned if the property's value is an empty string (`''`).
+        - `line`, str, line from which to read the value.
+        - `prefix`, str, prefix that identifies the property.
+        - `property`, type, type of the value.
+          This information will be used to cast the value string extracted from `line` to the correct type.
+        - `default`, default value to be returned if the property's value is an empty string (`''`).
 
-Returns:
+        Returns:
 
-- value of type `property_type` or `default`.
+        - value of type `property_type` or `default`.
         """
         prop = line[len(prefix):-1] # Take all characters except the last two, which are the newline
         # escape sequence '\n'.
@@ -129,24 +129,24 @@ Returns:
     def read_nist_element_property_with_uncertainty(self, line, prefix, default=None):
         """Read a floating-point value from a line that also contains an uncertainty
         
-Given a line like 
+        Given a line like 
 
-::
+        ::
 
-    PROPERTY = VALUE(UNCERTAINTY)
+            PROPERTY = VALUE(UNCERTAINTY)
 
-this function reads `VALUE` and casts it to a `float`.
+        this function reads `VALUE` and casts it to a `float`.
 
-Parameters:
+        Parameters:
 
-- `line`, str, line from which to read the value.
-- `prefix`, str, prefix that identifies the property.
-- `property`, type, type of the value. \
-- `default`, default value to be returned if the property's value is an empty string (`''`).
+        - `line`, str, line from which to read the value.
+        - `prefix`, str, prefix that identifies the property.
+        - `property`, type, type of the value.
+        - `default`, default value to be returned if the property's value is an empty string (`''`).
 
-Returns:
+        Returns:
 
-- float, value
+        - float, value
         """
         return self.read_nist_element_property(
             line[0:line.find('(')+1], prefix, float, default
@@ -155,19 +155,19 @@ Returns:
     def read_nist_element_symbols(self):
         """Find all element symbols in the data file and organize them in a dictionary.
         
-This functions loops over the data file and finds all unique element symbols.
-They will be collected in a dictionary such that the proton number is the key, and the element \
-symbol the value.
-For example, let the dictionary be called `X`.
-To get a list of all element symbols for Z = 1 to Z = 10, one could do:
+        This functions loops over the data file and finds all unique element symbols.
+        They will be collected in a dictionary such that the proton number is the key, and the element
+        symbol the value.
+        For example, let the dictionary be called `X`.
+        To get a list of all element symbols for Z = 1 to Z = 10, one could do:
 
-::
+        ::
 
-    [X[Z] for Z in range(1, 11)]
+            [X[Z] for Z in range(1, 11)]
 
-Returns:
+        Returns:
 
-- dictionary with element symbols as keys and proton numbers as values.
+        - dictionary with element symbols as keys and proton numbers as values.
         """
         X = {}
         with open(self.element_data_file_name, 'r') as file:
