@@ -26,6 +26,7 @@ def effective_temperature_debye_approximation(T, T_D):
     )
 
 
+# Source: https://www.knowledgedoor.com/2/elements_handbook/debye_temperature.html
 room_temperature_T_D = {
     "Al": 390.0,
     "Am": None,
@@ -75,7 +76,7 @@ room_temperature_T_D = {
     "Ni": 345.0,
     "Nb": 260.0,
     "Os": 400.0,
-    "Pa": 275.0,
+    "Pd": 275.0,
     "P": 576.0,
     "Pt": 225.0,
     "Pu": 176.0,
