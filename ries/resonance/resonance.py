@@ -157,14 +157,36 @@ to :math:`J_1`:
 
 Attributes:
 
-- `*_state`, `State` objects, initial, intermediate, and final state of the reaction. \
+- `*_state`, `State` objects, initial (0), intermediate (2), and final (1) state of the reaction. \
 The final state is optional and defaults to `None`.
 - `resonance_energy`, float. The resonance energy is equal to the energy difference of the states \
 0 and 2 up to an optional recoil correction.
+- `recoil_correction`, `Recoil` object, callable object that applies the recoil correction to \
+the resonance energy (default: `NoRecoil`, which is the identity function).
 - `energy_integrated_cross_section_constant`, float, the constant :math:`\\left( \\pi \\hbar c \\right)^2` in :math:`\\mathrm{MeV} \\mathrm{fm}^2`.
+- `statistical_factor`, float, :math:`S`, statistical factor for the magnetic substates.
+- `final_state_branching_ratio`, float, :math:`\\Gamma_{2 \\to 1} / \\Gamma_2` branching ratio \
+for the decay of the intermediate to the final state.
+- `energy_integrated_cross_section`, float, energy-integrated cross section whose value is \
+independent of the PDF, in :math:`\\mathrm{MeV} \\mathrm{fm}^2`.
+- `probability_distribution`, `scipy.stats.rv_continuous` object or a class that provides \
+equivalents of the `pdf`, `cdf`, and `ppf` methods, normalized probability distribution that \
+describes the shape of the resonance (default: `scipy.stats.uniform`).
+- `probability_distribution_parameters`, array of int and/or float, parameters for the \
+probability distribution (default: parameters for a uniform distribution that create a box-shaped \
+cross section around the resonance energy).
     """
     def __init__(self, initial_state, intermediate_state,
         final_state=None, recoil_correction=NoRecoil()):
+        """Initialization
+        
+Parameters:
+
+- `*_state`, `State` objects, initial (0), intermediate (2), and final (1) state of the reaction. \
+The final state is optional and defaults to `None`.
+- `recoil_correction`, `Recoil` object, callable object that applies the recoil correction to \
+the resonance energy (default: `NoRecoil`, which is the identity function).
+        """
         self.initial_state = initial_state
         self.intermediate_state = intermediate_state
         self.final_state = final_state
@@ -178,23 +200,82 @@ The final state is optional and defaults to `None`.
         self.probability_distribution = uniform
         self.probability_distribution_parameters = (self.resonance_energy-0.5, 1.)
 
-    def __call__(self, energy, input_is_absolute_energy=True):
+    def __call__(self, E, input_is_absolute_energy=True):
+        """Evaluate the cross section for a given energy of the incident photon
+        
+Parameters:
+
+- `E`, float or array_like, energy of the incident beam particle in MeV.
+- `input_is_absolute_energy`, bool. If `True`, this function returns \
+:math:`\\sigma \\left( E \\right)`. \
+If `False`, returns :math:`\\sigma \\left( E - E_r \\right)`, where `E_r` is `self.resonance_energy`. \
+The `False` case can be used to center the cross section around zero for plotting.
+
+Returns:
+
+- float or array_like, cross section in :math:`\\mathrm{fm}^2`.
+        """
         if not input_is_absolute_energy:
-            energy = energy + self.resonance_energy
-        return self.energy_integrated_cross_section*self.probability_distribution.pdf(energy, *self.probability_distribution_parameters)
+            E = E + self.resonance_energy
+        return self.energy_integrated_cross_section*self.probability_distribution.pdf(E, *self.probability_distribution_parameters)
 
     def coverage_interval(self, coverage):
+        """Return energy range that covers a given percentage of the cross section
+        
+Given a required coverage :math:`0 \\leq c \\leq 1`, this function returns an energy interval around \
+the median of the distribution that includes :math:`c/2` of the probability mass left of the median \
+and :math:`c/2` right of the median, i.e. it leaves out the possibly infinite limits of the \
+distribution's domain.
+
+Parameters:
+
+- `coverage`, float between 0 and 1, desired coverage.
+
+Returns:
+
+- pair of float, limits of the energy range.
+        """
         return self.probability_distribution.ppf(
             0.5*np.array([1. - coverage, 1.+coverage]),
             *self.probability_distribution_parameters
         )
 
     def equidistant_energy_grid(self, coverage_or_limits, n_points):
+        """Create an equidistant grid in a given 1D energy range or with a given coverage
+        
+Extends the functionality of `CrossSection.equidistant_energy_grid`.
+It is now possible to request a certain coverage instead of giving the energy range explicitly.
+
+Parameters:
+
+- `coverage_or_limits`, pair of float or single float between 0 and 1, limits of the energy range \
+or desired coverage.
+- `n_points`, int, number of energies that define the grid, i.e. number of partitions plus 1.
+
+Returns:
+
+- ndarray, array of grid points
+        """
         if isinstance(coverage_or_limits, (int, float)):
             coverage_or_limits = self.coverage_interval(coverage_or_limits)
         return CrossSection.equidistant_energy_grid(self, coverage_or_limits, n_points)
 
     def equidistant_probability_grid(self, coverage_or_limits, n_points):
+        """Create a grid with equal reaction probabilities per interval
+
+Extends the functionality of `CrossSection.equidistant_probability_grid`.
+It is now possible to request a certain coverage instead of giving the energy range explicitly.
+
+Parameters:
+
+- `coverage_or_limits`, pair of float or single float between 0 and 1, limits of the energy range \
+or desired coverage.
+- `n_points`, int, number of energies that define the grid, i.e. number of partitions plus 1.
+
+Returns:
+
+- ndarray, array of grid points
+        """
         if isinstance(coverage_or_limits, (int, float)):
             limits = (0.5*(1.-coverage_or_limits), 0.5*(1.+coverage_or_limits))
         else:
@@ -223,6 +304,10 @@ The final state is optional and defaults to `None`.
         )
 
     def get_final_state_branching_ratio(self):
+        """Calculate the branching ratio for the decay to an optional final state
+        
+If no final state is given, returns 1.
+        """
         if self.final_state is None:
             return 1.
         return (
@@ -230,6 +315,9 @@ The final state is optional and defaults to `None`.
             /self.intermediate_state.width)
 
     def get_statistical_factor(self):
+        """Calculate the statistical factor for the excitation using properties of the initial \
+and the intermediate state.
+"""
         return (
             (self.intermediate_state.two_J+1.)
             /(self.initial_state.two_J+1.)

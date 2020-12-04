@@ -102,6 +102,7 @@ function returns a set of :math:`n` energies :math:`\\left\\{ E_i \\right\\}` su
 .. math :: E_{i + 1} - E_i = E_{j + 1} - E_j
 
 for all :math:`0 \\leq i, j < n - 1`, i.e. the range is divided into partitions of equal size.
+
 This function simply wraps `numpy.linspace`.
 
 Parameters:
@@ -175,7 +176,7 @@ See also `CrossSection.__call__()`.
         return self.constant
 
     def equidistant_probability_grid(self, limits, n_points):
-        """Create an equidistant grid in a given 1D energy range
+        """Create an equidistant-probability grid in a given 1D energy range
         
 See also `CrossSection.equidistant_probability_grid()`.
         """
