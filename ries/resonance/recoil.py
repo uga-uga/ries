@@ -108,6 +108,7 @@ class FreeNucleusRecoil(Recoil):
 
         - `amu`, float, mass of the nucleus in atomic mass units.
         """
+        super().__init__()
         self.amu = amu
 
     def __call__(self, energy_difference):

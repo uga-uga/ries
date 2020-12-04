@@ -48,8 +48,6 @@ recommended to give energies and widths in :math:`\mathrm{MeV}`.
   stable nuclei, this is a valid approximation.
 """
 
-from scipy.constants import physical_constants
-
 
 class GroundState:
     """Class representing a ground state

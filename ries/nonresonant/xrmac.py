@@ -61,7 +61,6 @@ from scipy.interpolate import interp1d
 from scipy.constants import physical_constants
 
 from ries.constituents.element import natural_elements, X
-from ries.cross_section import CrossSection
 from ries.nonresonant.nonresonant import Nonresonant
 
 
@@ -142,7 +141,8 @@ class XRMAC(Nonresonant):
         """
         return 10 ** (self.interpolation_log_log(np.log10(E)))
 
-    def interpolate_log_log(self, data):
+    @staticmethod
+    def interpolate_log_log(data):
         r"""Interpolate base-10 logarithm of data pairs.
 
         Given a set of pairs :math:`\left( x_i, y_i \right)` (:math:`0 \leq i < n`), this function

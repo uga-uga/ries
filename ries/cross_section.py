@@ -62,7 +62,6 @@ This may lead to runtime `TypeError`s.*
 """
 
 from itertools import chain
-from warnings import warn
 
 import numpy as np
 
@@ -213,7 +212,7 @@ class CrossSectionWeightedSum:
     - `scale_factors`, list of float. The i-th scale factor in the list is used to scale the i-th cross section in `self.reactions`.
     """
 
-    def __init__(self, reactions=[], scale_factors=None):
+    def __init__(self, reactions=None, scale_factors=None):
         """Initialization
 
         Parameters:
@@ -221,7 +220,7 @@ class CrossSectionWeightedSum:
         - `reactions`, list of `CrossSection` objects, all cross sections that contribute to the weighted sum.
         - `scale_factors`, list of float. The i-th scale factor in the list is used to scale the i-th cross section in `self.reactions`.
         """
-        self.reactions = reactions
+        self.reactions = reactions or []
         if scale_factors is None:
             scale_factors = [1.0] * len(reactions)
         self.scale_factors = scale_factors

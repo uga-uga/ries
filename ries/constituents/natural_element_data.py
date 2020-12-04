@@ -93,7 +93,7 @@ class NISTElementDataReader:
                     )
                     if current_Z < Z:
                         continue
-                    elif current_Z > Z:
+                    if current_Z > Z:
                         break
                 elif self.X_prefix in line and current_Z == Z:
                     X = self.read_nist_element_property(line, self.X_prefix, str)
@@ -113,7 +113,8 @@ class NISTElementDataReader:
 
         return (abundances, isotopes)
 
-    def read_nist_element_property(self, line, prefix, property_type=str, default=None):
+    @staticmethod
+    def read_nist_element_property(line, prefix, property_type=str, default=None):
         """Read the value of a single property from a line
 
         Parameters:
@@ -184,6 +185,6 @@ class NISTElementDataReader:
             for line in file:
                 if self.Z_prefix in line:
                     Z = self.read_nist_element_property(line, self.Z_prefix, int)
-                if self.X_prefix in line and not Z in X:
+                if self.X_prefix in line and Z not in X:
                     X[Z] = self.read_nist_element_property(line, self.X_prefix)
         return X

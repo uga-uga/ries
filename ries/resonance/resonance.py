@@ -94,7 +94,7 @@ For example:
 ::
 
     from scipy.stats import norm
-    
+
     print(
         norm.ppf(norm.cdf(0.)) == 0.
     )

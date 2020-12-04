@@ -26,11 +26,11 @@ where :math:`x_d` (:math:`0 \leq d < n_d`) is the :math:`d`-th coordinate of
 For the :math:`x_0` coordinate, a partition :math:`\left\{ x_{0, k} \right\}` (:math:`0 \leq k < n`, :math:`x_{0, 0} = x_{0, i}`, :math:`x_{0, n-1} = x_{0, f}`, and
 :math:`x_{0,k} < x_{0, k+1}` for all `k < n - 1`) is assumed to be given.
 
-This function calculates 
+This function calculates
 
 .. math:: \sum_{k=0}^{n-2} \underbrace{\int_{x_{n_d-1, i}}^{x_{n_d-1, f}} ... \int_{x_{0, k}}^{x_{0, k+1}} f \left( \mathbf{x} \right) \mathrm{d} x_0 ... \mathrm{d} x_{n_d - 1}}_{I_i}.
 
-Mathematically, this is equivalent to 
+Mathematically, this is equivalent to
 
 .. math:: \int_{x_{n_d-1, i}}^{x_{n_d-1, f}} ... \int_{x_{0, i}}^{x_{0, f}} f \left( \mathbf{x} \right) \mathrm{d} x_0 ... \mathrm{d} x_{n_d - 1},
 
@@ -48,10 +48,10 @@ The total error returned by `quad_partition` is:
 """
 
 import numpy as np
-from scipy.integrate import quad, nquad
+from scipy.integrate import nquad
 
 
-def quad_partition(f, x0, x1_to_xn_minus_1=[]):
+def quad_partition(f, x0, x1_to_xn_minus_1=None):
     r"""Multidimensional numerical integration with a partitioned first coordinate
 
     Parameters:
@@ -67,6 +67,7 @@ def quad_partition(f, x0, x1_to_xn_minus_1=[]):
     """
     integral = 0.0
     uncertainty_estimate = 0.0
+    x1_to_xn_minus_1 = x1_to_xn_minus_1 or []
 
     for i in range(len(x0) - 1):
         nquad_result = nquad(f, [[x0[i], x0[i + 1]], *x1_to_xn_minus_1])

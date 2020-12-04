@@ -25,15 +25,18 @@ class VoigtDistribution:
     def __init__(self):
         pass
 
-    def cdf(self, energy, resonance_energy, sigma, gamma, eta, gamma_G, gamma_L):
+    @staticmethod
+    def cdf(energy, resonance_energy, sigma, gamma, eta, gamma_G, gamma_L):
         return (1.0 - eta) * norm.cdf(
             energy, loc=resonance_energy, scale=gamma_G / np.sqrt(2.0)
         ) + eta * cauchy.cdf(energy, loc=resonance_energy, scale=0.5 * gamma_L)
 
-    def pdf(self, energy, resonance_energy, sigma, gamma, eta, gamma_G, gamma_L):
+    @staticmethod
+    def pdf(energy, resonance_energy, sigma, gamma, eta, gamma_G, gamma_L):
         return voigt_profile(energy - resonance_energy, sigma, gamma)
 
-    def ppf(self, quantile, resonance_energy, sigma, gamma, eta, gamma_G, gamma_L):
+    @staticmethod
+    def ppf(quantile, resonance_energy, sigma, gamma, eta, gamma_G, gamma_L):
         return (1.0 - eta) * norm.ppf(
             quantile, loc=resonance_energy, scale=gamma_G / np.sqrt(2.0)
         ) + eta * cauchy.ppf(quantile, loc=resonance_energy, scale=0.5 * gamma_L)

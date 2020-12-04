@@ -151,7 +151,8 @@ class KleinNishina(Nonresonant):
 
         return self.Ep_over_E(E, np.pi) * E
 
-    def theta(self, E, Ep):
+    @staticmethod
+    def theta(E, Ep):
         """Scattering angle for a given scattered energy
 
         Parameters:
@@ -170,7 +171,8 @@ class KleinNishina(Nonresonant):
             / E
         )
 
-    def Ep_over_E(self, E, theta):
+    @staticmethod
+    def Ep_over_E(E, theta):
         """Ratio of final and initial photon energy for a given scattering angle
 
         Parameters:

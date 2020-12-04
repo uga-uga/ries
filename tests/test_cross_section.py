@@ -21,7 +21,6 @@ from scipy.constants import physical_constants
 from ries.cross_section import (
     CrossSection,
     ConstantCrossSection,
-    CrossSectionWeightedSum,
 )
 from ries.constituents.element import natural_elements
 from ries.nonresonant.xrmac import cm_to_fm, kg_to_g, xrmac

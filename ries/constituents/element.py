@@ -44,9 +44,7 @@ element symbol as a value.
 from pathlib import Path
 
 import numpy as np
-from scipy.constants import physical_constants
 
-from ries.constituents.isotope import Isotope
 from ries.constituents.natural_element_data import NISTElementDataReader
 
 
@@ -82,7 +80,8 @@ class Element:
         self.abundances = abundances
         self.amu = self.amu_from_isotopic_composition(self.abundances, self.isotopes)
 
-    def amu_from_isotopic_composition(self, abundances, isotopes):
+    @staticmethod
+    def amu_from_isotopic_composition(abundances, isotopes):
         """Calculate element mass for a given isotopic composition
 
         Parameters:

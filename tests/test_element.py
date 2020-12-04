@@ -13,10 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with ries.  If not, see <https://www.gnu.org/licenses/>.
 
-import numpy as np
-from scipy.constants import physical_constants
-
-from ries.constituents.element import natural_elements, X
+from ries.constituents.element import natural_elements
 
 
 def test_element():
