@@ -4,9 +4,7 @@ A python library for the estimation of photonuclear reaction rates in low-energy
 
 ## Introduction
 
-```
-'When I increase my sample ('target') size by a factor of two, my particle detectors will record twice as many reactions.'
-```
+> When I increase my sample ('target') size by a factor of two, my particle detectors will record twice as many reactions.
 
 If you fully agree to this statement, you have a rough idea of the scaling laws in beam-on-target experiments, but you may have overlooked some effects that make photonuclear experiments both challenging and exciting.
 The `ries` library is all about these finite-temperature, thick-target, isolated-resonance, multiple-scattering ... effects that call for a reconsideration of statements like the one above.
