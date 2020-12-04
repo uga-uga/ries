@@ -317,7 +317,7 @@ If no final state is given, returns 1.
     def get_statistical_factor(self):
         """Calculate the statistical factor for the excitation using properties of the initial \
 and the intermediate state.
-"""
+        """
         return (
             (self.intermediate_state.two_J+1.)
             /(self.initial_state.two_J+1.)

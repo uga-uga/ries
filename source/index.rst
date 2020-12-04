@@ -17,6 +17,7 @@ Modules
    natural_element_data.rst
    nonresonant.rst
    quad_partition.rst
+   recoil.rst
    resonance.rst
    state.rst
    xrmac.rst
