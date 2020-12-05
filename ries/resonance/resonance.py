@@ -16,6 +16,9 @@
 r"""
 Class for a photonuclear cross section with a single isolated resonance.
 
+A resonance is a local enhancement of the cross section of a nuclear reaction due to the presence 
+of bound excited states of the nucleus (see, e.g., Sec. VIII in Ref. :cite:`BlattWeisskopf1979`).
+
 The cross section for a resonant reaction :math:`\sigma_r` is assumed to consists of a localized
 'peak' with an arbitrary shape and a 'tail' that decays sufficiently fast towards low and high
 energies so that:
@@ -107,17 +110,17 @@ in the sense of the theory of resonance by Breit and Wigner :cite:`BreitWigner19
 If resonances get too close to each other, interference effects will occur that are outside the
 scope of the present code.
 
-For an electromagnetic excitation from an isolated state 0 to an isolated state 2 by absorption
-of a photon, the cross section is proportional to
+For an excitation from a state 0 to an isolated state 2 by absorption
+of a particle, the cross section is proportional to
 [compare Eq. (12) in :cite:`BreitWigner1936`]:
 
-.. math:: \underbrace{\left( \frac{\pi \hbar c}{E}  \right)^2}_{\frac{\Lambda^2}{4}} \underbrace{\frac{2 J_2 + 1}{2 J_0 + 1}}_{S} \Gamma_{2 \to 0}.
+.. math:: \underbrace{\left( \frac{\pi \hbar c}{E}  \right)^2}_{\frac{\Lambda^2}{4}} \underbrace{\frac{2 J_2 + 1}{2 J_0 + 1}}_{g} \Gamma_{2 \to 0}.
 
 In the expression above, :math:`\hbar c` denotes the product of the reduced Planck constant and
 the speed of light.
 The cross section depends on the de-Broglie wave length :math:`\Lambda` of the incident photon,
 which is related to its energy :math:`E`,
-a statistical factor :math:`S` that takes into account the magnetic substates, and the partial
+a statistical factor :math:`2g` [k]_ that takes into account the magnetic substates, and the partial
 width for a transition between the two states [i]_.
 
 Since the FWHM of the cross sections for isolated electromagnetic resonances is usually much
@@ -146,7 +149,11 @@ With this approximation, the energy-integrated cross section is given by:
     Ref. :cite:`BlattWeisskopf1979`).
 .. [j] This approximation is so common that it is sometimes introduced tacitly.
     For example, compare Refs. :cite:`Metzger1959` and :cite:`Romig2015` to :cite:`BreitWigner1936` and :cite:`Pruet2006`.
+.. [k] The factor of 2 incorporates the two possible photon helicities. \
+See also `ries.resonance.breit_wigner`.
 """
+
+import warnings
 
 import numpy as np
 
@@ -160,37 +167,39 @@ from ries.resonance.recoil import NoRecoil
 class Resonance(CrossSection):
     r"""Class for a resonance cross section that can be modeled by a continuous probability distribution.
 
-    This class models an 'excitation cross section' :math:`\sigma_{0 \to 2}` for a resonant
-    reaction that excites a nucleus from an initial state :math:`J_0` to
-    an excited state :math:`J_2`.
+        This class models an 'excitation cross section' :math:`\sigma_{0 \to 2}` for a resonant
+        reaction that excites a nucleus from an initial state :math:`J_0` to
+        an excited state :math:`J_2`.
 
-    Optionally, the cross section can be restricted to a certain decay channel :math:`J_1` of the
-    excited state, which is denoted as :math:`\sigma_{0 \to 2 \to 1}`.
-    In this case, the excitation cross section is multiplied by the branching ratio for the decay
-    to :math:`J_1`:
+        Optionally, the cross section can be restricted to a certain decay channel :math:`J_1` of the
+        excited state, which is denoted as :math:`\sigma_{0 \to 2 \to 1}`.
+        In this case, the excitation cross section can be multiplied by the branching ratio for
+        the decay to :math:`J_1` [l]_:
 
-    .. math:: \sigma_{0 \to 2 \to 1} = \sigma_{0 \to 2} \frac{\Gamma_{2 \to 1}}{\Gamma_2}.
+        .. math:: \sigma_{0 \to 2 \to 1} = \sigma_{0 \to 2} \frac{\Gamma_{2 \to 1}}{\Gamma_2}.
 
-    Attributes:
+        Attributes:
 
-    - `*_state`, `State` objects, initial (0), intermediate (2), and final (1) state of the reaction.
-      The final state is optional and defaults to `None`.
-    - `resonance_energy`, float. The resonance energy is equal to the energy difference of the states
-      0 and 2 up to an optional recoil correction.
-    - `recoil_correction`, `Recoil` object, callable object that applies the recoil correction to
-      the resonance energy (default: `NoRecoil`, which is the identity function).
-    - `energy_integrated_cross_section_constant`, float, the constant :math:`\left( \pi \hbar c \right)^2` in :math:`\mathrm{MeV} \mathrm{fm}^2`.
-    - `statistical_factor`, float, :math:`S`, statistical factor for the magnetic substates.
-    - `final_state_branching_ratio`, float, :math:`\Gamma_{2 \to 1} / \Gamma_2` branching ratio
-      for the decay of the intermediate to the final state.
-    - `energy_integrated_cross_section`, float, energy-integrated cross section whose value is
-      independent of the PDF, in :math:`\mathrm{MeV} \mathrm{fm}^2`.
-    - `probability_distribution`, `scipy.stats.rv_continuous` object or a class that provides
-      equivalents of the `pdf`, `cdf`, and `ppf` methods, normalized probability distribution that
-      describes the shape of the resonance (default: `scipy.stats.uniform`).
-    - `probability_distribution_parameters`, array of int and/or float, parameters for the
-      probability distribution (default: parameters for a uniform distribution that create a box-shaped
-      cross section around the resonance energy).
+        - `*_state`, `State` objects, initial (0), intermediate (2), and final (1) state of the reaction.
+          The final state is optional and defaults to `None`.
+        - `resonance_energy`, float. The resonance energy is equal to the energy difference of the states
+          0 and 2 up to an optional recoil correction.
+        - `recoil_correction`, `Recoil` object, callable object that applies the recoil correction to
+          the resonance energy (default: `NoRecoil`, which is the identity function).
+        - `energy_integrated_cross_section_constant`, float, the constant :math:`\left( \pi \hbar c \right)^2` in :math:`\mathrm{MeV} \mathrm{fm}^2`.
+        - `statistical_factor`, float, :math:`g`, statistical factor for the magnetic substates.
+        - `final_state_branching_ratio`, float, :math:`\Gamma_{2 \to 1} / \Gamma_2` branching ratio
+          for the decay of the intermediate to the final state.
+        - `energy_integrated_cross_section`, float, energy-integrated cross section whose value is
+          independent of the PDF, in :math:`\mathrm{MeV} \mathrm{fm}^2`.
+        - `probability_distribution`, `scipy.stats.rv_continuous` object or a class that provides
+          equivalents of the `pdf`, `cdf`, and `ppf` methods, normalized probability distribution that
+          describes the shape of the resonance (default: `scipy.stats.uniform`).
+        - `probability_distribution_parameters`, array of int and/or float, parameters for the
+          probability distribution (default: parameters for a uniform distribution that create a 
+          symmetric box-shaped cross section around the resonance energy with a width of 1 MeV).
+
+    .. [l] This statement is also known as the Bohr hypothesis :cite:`Bohr1936`.
     """
 
     def __init__(
@@ -258,6 +267,12 @@ class Resonance(CrossSection):
         and :math:`c/2` right of the median, i.e. it leaves out the possibly infinite limits of the
         distribution's domain.
 
+        The method issues a warning if an unphysical negative lower limit is required to meet
+        the requested coverage.
+        This may happen, since some of the probability distributions used by `ries` are defined
+        on the entire set of real numbers.
+        If a negative lower limit is encountered, it will be set to 0.
+
         Parameters:
 
         - `coverage`, float between 0 and 1, desired coverage.
@@ -265,11 +280,31 @@ class Resonance(CrossSection):
         Returns:
 
         - pair of float, limits of the energy range.
+
+        Warns:
+
+        - `UserWarning`, if the lower limit is artificially set to 0 because it would have had an unphysical negative value.
+        - `UserWarning`, if the upper limit is infinity.
         """
-        return self.probability_distribution.ppf(
+
+        limits = self.probability_distribution.ppf(
             0.5 * np.array([1.0 - coverage, 1.0 + coverage]),
             *self.probability_distribution_parameters,
         )
+
+        if limits[0] < 0.0:
+            warnings.warn(
+                "Unphysical negative lower limit of coverage interval encountered. Returning zero instead. The maximum coverage that can be reached with positive energies for this cross section is {:f} %.".format(
+                    100.0 * (1.0 - self.probability_distribution.cdf(0.0))
+                ),
+                UserWarning,
+            )
+        if np.isinf(limits[1]):
+            warnings.warn(
+                "Infinite upper limit of coverage interval encountered.", UserWarning
+            )
+
+        return limits
 
     def equidistant_energy_grid(self, coverage_or_limits, n_points):
         """Create an equidistant grid in a given 1D energy range or with a given coverage
