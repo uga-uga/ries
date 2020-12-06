@@ -17,6 +17,10 @@ voigt
 =====
 
 .. automodule:: voigt
+
+.. autoclass:: SemiPseudoVoigtDistribution
+   :members:
+
 .. autoclass:: Voigt
     :members:
     :special-members:

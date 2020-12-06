@@ -18,6 +18,7 @@ from scipy.constants import physical_constants
 from scipy.stats import norm
 
 from ries.resonance.resonance import Resonance
+from ries.resonance.maxwell_boltzmann import MaxwellBoltzmann
 
 
 class Gauss(Resonance):
@@ -31,24 +32,11 @@ class Gauss(Resonance):
     ):
         Resonance.__init__(self, initial_state, intermediate_state, final_state)
 
-        self.amu = amu
-        self.effective_temperature = effective_temperature
-        self.doppler_width = self.get_doppler_width()
+        self.maxwell_boltzmann = MaxwellBoltzmann(amu, effective_temperature)
 
         self.probability_distribution = norm
         self.probability_distribution_parameters = (
             self.resonance_energy,
-            self.doppler_width / np.sqrt(2.0),
-        )
-
-    def get_doppler_width(self):
-        return self.resonance_energy * np.sqrt(
-            2.0
-            * physical_constants["Boltzmann constant in eV/K"][0]
-            * 1e-6
-            * self.effective_temperature
-            / (
-                self.amu
-                * physical_constants["atomic mass constant energy equivalent in MeV"][0]
-            )
+            self.maxwell_boltzmann.get_doppler_width(self.resonance_energy)
+            / np.sqrt(2.0),
         )

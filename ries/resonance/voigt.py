@@ -93,40 +93,41 @@ normal distribution and a Cauchy distribution instead of a convolution (see, e.g
 .. [r] At normal conditions, the particles in motion would be atoms instead of bare atomic nuclei, but the contribution of the electrons' masses and their binding energies were neglected here.
 """
 
-import numpy as np
 from scipy.special import voigt_profile
-from scipy.stats import cauchy, norm
 
-from ries.resonance.gauss import Gauss
 from ries.resonance.pseudo_voigt import PseudoVoigt, PseudoVoigtDistribution
 
 
 class SemiPseudoVoigtDistribution(PseudoVoigtDistribution):
     """Class for a Voigt distribution, using pseudo-Voigt expressions for CDF and PPF
-    
-The `pdf()` method calls `scipy.special.voigt_profile`, while the CDF and the PPF are approximated 
-by a pseudo-Voigt distribution (see `ries.resonance.pseudo_voigt`).
+
+    The `pdf()` method calls `scipy.special.voigt_profile`, while the CDF and the PPF are approximated
+    by a pseudo-Voigt distribution (see `ries.resonance.pseudo_voigt`).
+
+    See also `ries.resonance.pseudo_voigt.PseudoVoigtDistribution`.
     """
 
-    @staticmethod
-    def cdf(energy, resonance_energy, sigma, gamma, eta, gamma_G, gamma_L):
+    def pdf(self, E):
+        """PDF of Voigt distribution
+        
+        Wraps `scipy.special.voigt_profile`.
 
-        return (1.0 - eta) * norm.cdf(
-            energy, loc=resonance_energy, scale=gamma_G / np.sqrt(2.0)
-        ) + eta * cauchy.cdf(energy, loc=resonance_energy, scale=0.5 * gamma_L)
+        Parameter:
 
-    @staticmethod
-    def pdf(energy, resonance_energy, sigma, gamma, eta, gamma_G, gamma_L):
-        return voigt_profile(energy - resonance_energy, sigma, gamma)
+        - `E`, float or array_like, energy of the incident beam particle in MeV.
 
-    @staticmethod
-    def ppf(quantile, resonance_energy, sigma, gamma, eta, gamma_G, gamma_L):
-        return (1.0 - eta) * norm.ppf(
-            quantile, loc=resonance_energy, scale=gamma_G / np.sqrt(2.0)
-        ) + eta * cauchy.ppf(quantile, loc=resonance_energy, scale=0.5 * gamma_L)
+        Returns:
+
+        - float or array_like, PDF
+        """
+        return voigt_profile(E - self.resonance_energy, self.sigma, self.gamma)
 
 
-class Voigt(Gauss):
+class Voigt(PseudoVoigt):
+    r"""Class for a Doppler-broadened Breit-Wigner cross section (Voigt profile)
+
+    See `ries.resonance.resonance.Resonance`.
+    """
     def __init__(
         self,
         initial_state,
@@ -135,7 +136,16 @@ class Voigt(Gauss):
         effective_temperature,
         final_state=None,
     ):
-        Gauss.__init__(
+        r"""Initialization
+
+        Parameters:
+
+        - `amu`, float, mass of the nucleus in atomic mass units.
+        - `effective_temperature`, float, effective temperature of the ensemble of nuclei in K.
+
+        See also `ries.resonance.resonance.Resonance`.
+        """
+        PseudoVoigt.__init__(
             self,
             initial_state,
             intermediate_state,
@@ -143,16 +153,10 @@ class Voigt(Gauss):
             effective_temperature,
             final_state,
         )
-        self.pseudo_voigt = PseudoVoigt(
-            initial_state, intermediate_state, amu, effective_temperature, final_state
-        )
 
-        self.probability_distribution = SemiPseudoVoigtDistribution()
-        self.probability_distribution_parameters = (
+        self.probability_distribution = SemiPseudoVoigtDistribution(
             self.resonance_energy,
-            self.doppler_width / np.sqrt(2.0),
-            0.5 * self.intermediate_state.width,
-            self.pseudo_voigt.eta,
-            self.pseudo_voigt.gamma_G,
-            self.pseudo_voigt.gamma_L,
+            self.intermediate_state.width,
+            amu,
+            effective_temperature,
         )

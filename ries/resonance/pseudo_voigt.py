@@ -16,52 +16,23 @@
 import numpy as np
 from scipy.stats import cauchy, norm
 
-from ries.resonance.gauss import Gauss
+from ries.resonance.maxwell_boltzmann import MaxwellBoltzmann
+from ries.resonance.resonance import Resonance
 
 
 class PseudoVoigtDistribution:
+    def __init__(self, resonance_energy, width, amu, effective_temperature):
+        self.resonance_energy = resonance_energy
+        self.maxwell_boltzmann = MaxwellBoltzmann(amu, effective_temperature)
 
-    @staticmethod
-    def cdf(energy, resonance_energy, eta, gamma_G, gamma_L):
-        return (1.0 - eta) * norm.cdf(
-            energy, loc=resonance_energy, scale=gamma_G / np.sqrt(2.0)
-        ) + eta * cauchy.cdf(energy, loc=resonance_energy, scale=0.5 * gamma_L)
-
-    @staticmethod
-    def pdf(energy, resonance_energy, eta, gamma_G, gamma_L):
-        return (1.0 - eta) * norm.pdf(
-            energy, loc=resonance_energy, scale=gamma_G / np.sqrt(2.0)
-        ) + eta * cauchy.pdf(energy, loc=resonance_energy, scale=0.5 * gamma_L)
-
-    @staticmethod
-    def ppf(quantile, resonance_energy, eta, gamma_G, gamma_L):
-        return (1.0 - eta) * norm.ppf(
-            quantile, loc=resonance_energy, scale=gamma_G / np.sqrt(2.0)
-        ) + eta * cauchy.ppf(quantile, loc=resonance_energy, scale=0.5 * gamma_L)
-
-
-class PseudoVoigt(Gauss):
-    def __init__(
-        self,
-        initial_state,
-        intermediate_state,
-        amu,
-        effective_temperature,
-        final_state=None,
-    ):
-        Gauss.__init__(
-            self,
-            initial_state,
-            intermediate_state,
-            amu,
-            effective_temperature,
-            final_state,
-        )
-
-        self.Gamma_L = self.intermediate_state.width
+        self.Gamma_L = width
         self.Gamma_L_squared = self.Gamma_L * self.Gamma_L
         self.Gamma_L_cubed = self.Gamma_L_squared * self.Gamma_L
         self.Gamma_L_squared_squared = self.Gamma_L_squared * self.Gamma_L_squared
+        self.doppler_width = self.maxwell_boltzmann.get_doppler_width(
+            self.resonance_energy
+        )
+        self.sigma = self.doppler_width / np.sqrt(2.0)
         self.Gamma_G = 2.0 * np.sqrt(np.log(2.0)) * self.doppler_width
         self.Gamma_G_squared = self.Gamma_G * self.Gamma_G
         self.Gamma_G_squared_squared = self.Gamma_G_squared * self.Gamma_G_squared
@@ -71,12 +42,27 @@ class PseudoVoigt(Gauss):
         self.gamma_G = self.Gamma / (2.0 * np.sqrt(np.log(2.0)))
         self.gamma_L = 0.5 * self.Gamma
 
-        self.probability_distribution = PseudoVoigtDistribution()
-        self.probability_distribution_parameters = (
-            self.resonance_energy,
-            self.eta,
-            self.gamma_G,
-            self.gamma_L,
+        self.gamma = 0.5 * width
+
+    def cdf(self, energy):
+        return (1.0 - self.eta) * norm.cdf(
+            energy, loc=self.resonance_energy, scale=self.gamma_G / np.sqrt(2.0)
+        ) + self.eta * cauchy.cdf(
+            energy, loc=self.resonance_energy, scale=0.5 * self.gamma_L
+        )
+
+    def pdf(self, energy):
+        return (1.0 - self.eta) * norm.pdf(
+            energy, loc=self.resonance_energy, scale=self.gamma_G / np.sqrt(2.0)
+        ) + self.eta * cauchy.pdf(
+            energy, loc=self.resonance_energy, scale=0.5 * self.gamma_L
+        )
+
+    def ppf(self, quantile):
+        return (1.0 - self.eta) * norm.ppf(
+            quantile, loc=self.resonance_energy, scale=self.gamma_G / np.sqrt(2.0)
+        ) + self.eta * cauchy.ppf(
+            quantile, loc=self.resonance_energy, scale=0.5 * self.gamma_L
         )
 
     def get_Gamma(self):
@@ -97,3 +83,23 @@ class PseudoVoigt(Gauss):
             - 0.47719 * self.Gamma_L_squared * inverse_Gamma_squared
             + 0.11116 * self.Gamma_L_cubed * inverse_Gamma_squared * inverse_Gamma
         )
+
+
+class PseudoVoigt(Resonance):
+    def __init__(
+        self,
+        initial_state,
+        intermediate_state,
+        amu,
+        effective_temperature,
+        final_state=None,
+    ):
+        Resonance.__init__(self, initial_state, intermediate_state, final_state)
+
+        self.probability_distribution = PseudoVoigtDistribution(
+            self.resonance_energy,
+            self.intermediate_state.width,
+            amu,
+            effective_temperature,
+        )
+        self.probability_distribution_parameters = ()
