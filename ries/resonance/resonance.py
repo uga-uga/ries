@@ -196,7 +196,7 @@ class Resonance(CrossSection):
           equivalents of the `pdf`, `cdf`, and `ppf` methods, normalized probability distribution that
           describes the shape of the resonance (default: `scipy.stats.uniform`).
         - `probability_distribution_parameters`, array of int and/or float, parameters for the
-          probability distribution (default: parameters for a uniform distribution that create a 
+          probability distribution (default: parameters for a uniform distribution that create a
           symmetric box-shaped cross section around the resonance energy with a width of 1 MeV).
 
     .. [l] This statement is also known as the Bohr hypothesis :cite:`Bohr1936`.

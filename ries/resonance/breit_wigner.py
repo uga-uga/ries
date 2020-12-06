@@ -54,7 +54,7 @@ with the location :math:`E_r` and the scale `\Gamma_2 / 2`, i.e. it can be writt
 
 with the integrated cross section :math:`I_{0 \to 2}`,
 
-Please note that the domain of the Cauchy distribution is the entire set of real numbers, not only 
+Note that the domain of the Cauchy distribution is the entire set of real numbers, not only 
 the nonnegative real numbers as expected for a physical cross section.
 This is because the Breit-Wigner formula is only an approximation for the cross section in the 
 vicinity of a resonance.

@@ -20,8 +20,6 @@ from ries.resonance.gauss import Gauss
 
 
 class PseudoVoigtDistribution:
-    def __init__(self):
-        pass
 
     @staticmethod
     def cdf(energy, resonance_energy, eta, gamma_G, gamma_L):
