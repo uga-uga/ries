@@ -13,46 +13,11 @@
    # You should have received a copy of the GNU General Public License
    # along with ries.  If not, see <https://www.gnu.org/licenses/>.
 
-Welcome to ries's documentation!
-================================
+maxwell_boltzmann
+=================
 
-**ries**: resonances integrated over energy and space
+.. automodule:: maxwell_boltzmann
 
-Modules
-=======
-
-.. toctree::
-   :maxdepth: 2
-
-   breit_wigner.rst
-   cross_section.rst
-   darboux.rst
-   element.rst
-   gauss.rst
-   isotope.rst
-   klein_nishina.rst
-   maxwell_boltzmann.rst
-   natural_element_data.rst
-   nonresonant.rst
-   pseudo_voigt.rst
-   quad_partition.rst
-   recoil.rst
-   resonance.rst
-   state.rst
-   voigt.rst
-   xrmac.rst
-
-Bibliography
-============
-
-.. toctree::
-   :maxdepth: 2
-
-   bibliography.rst  
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. autoclass:: MaxwellBoltzmann
+   :members:
+   :special-members:

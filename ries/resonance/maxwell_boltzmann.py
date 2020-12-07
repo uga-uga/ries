@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ries.  If not, see <https://www.gnu.org/licenses/>.
 
+"""Maxwell-Boltzmann distribution"""
+
 import numpy as np
 
 from scipy.constants import physical_constants

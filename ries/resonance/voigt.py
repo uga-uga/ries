@@ -83,10 +83,15 @@ which uses the parameters of the normal- and the Cauchy distribution, interpolat
 both and approaches them asymptotically as :math:`\sigma / \Gamma` goes to infinity or zero, 
 respectively.
 
-There is no closed analytic expresssion for the Voigt distribution, and, to the knowledge of the 
-author, numerical libraries like `scipy` (which is used in the `ries` code), implement at most its PDF.
+There is no closed analytic expression for the Voigt distribution, and, to the knowledge of the 
+author, numerical libraries like `scipy` (which is used in the `ries` code), implement at most its 
+PDF.
 For the CDF and PPF, a pseudo-Voigt distribution is used here, which is a linear combination of a 
-normal distribution and a Cauchy distribution instead of a convolution (see, e.g., :cite:`Ida2000`).
+normal distribution and a Cauchy distribution instead of a convolution 
+(see, e.g., :cite:`Ida2000`).
+Since the CDF and the PPF are only used for the determination of an equal-probability grid, the 
+relative deviations on the order of few percent :cite:`Ida2000` from the true Voigt distribution
+are negligible.
 
 .. [p] For example, modern centrifuges can reach rotational frequencies on the order of :math:`10^4 \mathrm{Hz}` (see, e.g., :cite:`ArabgolSleator2019`, where the outer edge of the sample reached a velocity of about :math:`13.5 \mathrm{kHz} \times 0.004 \mathrm{m} = 54 \mathrm{ms}^{-1}`).
 .. [q] Note that the integral requires unphysical negative energies as an argument for :math:`\sigma_r`. This is due to the nonrelativistic approximation for the Doppler shift. In the present case, however, the Breit-Wigner cross section, which will be substituted for :math:`sigma_r`, is also defined on the entire set of real numbers due to an approximation (see `ries.resonance.breit_wigner`). At moderate velocities and for narrow resonances, i.e. when both approximations are applicable, the negative-energy terms should be negligible.
@@ -109,7 +114,7 @@ class SemiPseudoVoigtDistribution(PseudoVoigtDistribution):
 
     def pdf(self, E):
         """PDF of Voigt distribution
-        
+
         Wraps `scipy.special.voigt_profile`.
 
         Parameter:
@@ -128,6 +133,7 @@ class Voigt(PseudoVoigt):
 
     See `ries.resonance.resonance.Resonance`.
     """
+
     def __init__(
         self,
         initial_state,

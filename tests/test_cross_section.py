@@ -90,7 +90,8 @@ class TestCrossSection:
         photoabsorption_cross_section = sum(ground_state_resonances)
 
         for resonance in ground_state_resonances:
-            energy = resonance.equidistant_probability_grid(0.9, 10)
+            with pytest.warns(UserWarning):
+                energy = resonance.equidistant_probability_grid(0.9, 10)
             single_cross_section = resonance(energy)
             sum_cross_section = photoabsorption_cross_section(energy)
 
@@ -102,7 +103,8 @@ class TestCrossSection:
         )
 
         for resonance in ground_state_resonances:
-            energy = resonance.equidistant_probability_grid(0.9, 10)
+            with pytest.warns(UserWarning):
+                energy = resonance.equidistant_probability_grid(0.9, 10)
             single_cross_section = resonance(energy)
             sum_cross_section = photoabsorption_cross_section(energy)
 

@@ -13,46 +13,15 @@
    # You should have received a copy of the GNU General Public License
    # along with ries.  If not, see <https://www.gnu.org/licenses/>.
 
-Welcome to ries's documentation!
-================================
-
-**ries**: resonances integrated over energy and space
-
-Modules
-=======
-
-.. toctree::
-   :maxdepth: 2
-
-   breit_wigner.rst
-   cross_section.rst
-   darboux.rst
-   element.rst
-   gauss.rst
-   isotope.rst
-   klein_nishina.rst
-   maxwell_boltzmann.rst
-   natural_element_data.rst
-   nonresonant.rst
-   pseudo_voigt.rst
-   quad_partition.rst
-   recoil.rst
-   resonance.rst
-   state.rst
-   voigt.rst
-   xrmac.rst
-
-Bibliography
+pseudo_voigt
 ============
 
-.. toctree::
-   :maxdepth: 2
+.. automodule:: pseudo_voigt
 
-   bibliography.rst  
+.. autoclass:: PseudoVoigtDistribution
+   :members:
+   :special-members:
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. autoclass:: PseudoVoigt
+    :members:
+    :special-members:

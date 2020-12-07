@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ries.  If not, see <https://www.gnu.org/licenses/>.
 
+import pytest
+
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from scipy.integrate import cumtrapz
@@ -47,7 +49,8 @@ def test_cross_section_plot():
     cross_section_compton = KleinNishina(natural_boron.Z)
 
     ene_lim = (1e-2, 12.0)
-    ene = cross_section.equidistant_probability_grid(ene_lim, 1000)
+    with pytest.warns(UserWarning):
+        ene = cross_section.equidistant_probability_grid(ene_lim, 1000)
     cro_sec = cross_section(ene)
     cro_sec_int = cumtrapz(cro_sec, ene)
     cro_sec_non_res = cross_section_nonresonant(ene)
