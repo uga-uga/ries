@@ -36,7 +36,7 @@ from .boron import B11
 class TestCrossSection:
     def test_abstract(self):
         # The abstract CrossSection class requires the users to implement the functions
-        # CrossSection.__call__() and CrossSection.equal_probability_grid().
+        # CrossSection.__call__() and CrossSection.equidistant_probability_grid().
         cross_section = CrossSection()
 
         with pytest.raises(NotImplementedError):
@@ -90,8 +90,7 @@ class TestCrossSection:
         photoabsorption_cross_section = sum(ground_state_resonances)
 
         for resonance in ground_state_resonances:
-            with pytest.warns(UserWarning):
-                energy = resonance.equidistant_probability_grid(0.9, 10)
+            energy = resonance.equidistant_probability_grid(0.9, 10)
             single_cross_section = resonance(energy)
             sum_cross_section = photoabsorption_cross_section(energy)
 
@@ -103,8 +102,7 @@ class TestCrossSection:
         )
 
         for resonance in ground_state_resonances:
-            with pytest.warns(UserWarning):
-                energy = resonance.equidistant_probability_grid(0.9, 10)
+            energy = resonance.equidistant_probability_grid(0.9, 10)
             single_cross_section = resonance(energy)
             sum_cross_section = photoabsorption_cross_section(energy)
 

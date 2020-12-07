@@ -49,8 +49,7 @@ def test_cross_section_plot():
     cross_section_compton = KleinNishina(natural_boron.Z)
 
     ene_lim = (1e-2, 12.0)
-    with pytest.warns(UserWarning):
-        ene = cross_section.equidistant_probability_grid(ene_lim, 1000)
+    ene = cross_section.equidistant_probability_grid(ene_lim, 1000)
     cro_sec = cross_section(ene)
     cro_sec_int = cumtrapz(cro_sec, ene)
     cro_sec_non_res = cross_section_nonresonant(ene)
