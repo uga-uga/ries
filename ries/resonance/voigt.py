@@ -22,7 +22,7 @@ propagation of the incident photon, the photon's energy :math:`E` will be Dopple
 In the nonrelativistic approximation, which is appropriate for even the highest 
 mechanically attainable velocities of macroscopic samples [p]_:
 
-.. math:: E^\prime \approx (1 + \frac{v_\parallel}{c}) E
+.. math:: E^\prime \approx \left(1 + \frac{v_\parallel}{c}\right) E
 
 Here, :math:`c` denotes the speed of light.
 The velocity is defined such that a positive value of :math:`v_\parallel` indicates that the 
@@ -65,7 +65,7 @@ The corresponding distribution of the Doppler shifts is:
 
 In the last step, the 'Doppler width'
 
-.. math:: \Delta = \sqrt{2 k_B T}{ \left( ^A\mathrm{X}\right) c^2 }
+.. math:: \Delta = \sqrt{\frac{2 k_B T}{ m \left( ^A\mathrm{X}\right) c^2 }} E
 
 was introduced.
 The distribution :math:`P_E` is a normal distribution with the mean value :math:`E` and the 
