@@ -202,8 +202,8 @@ class PseudoVoigtDistribution:
         """PPF of the pseudo-Voigt distribution
 
         This function tries to invert the pseudo-Voigt CDF numerically first.
-        If the root-finding algorithm does not converge for any of the given quantiles, the 
-        RuntimeError issued by the algorithm is caught and a fallback approximation is used which 
+        If the root-finding algorithm does not converge for any of the given quantiles, the
+        RuntimeError issued by the algorithm is caught and a fallback approximation is used which
         is based on a linear combination of PPFs.
 
         Parameters:
@@ -216,20 +216,23 @@ class PseudoVoigtDistribution:
         """
 
         try:
-            # scipy.optimize.newton returns different output depending on whether quantile is a 
+            # scipy.optimize.newton returns different output depending on whether quantile is a
             # scalar or an array.
-            # For a scalar, the root is `newton_result[0]` and the flag that indicates whether 
+            # For a scalar, the root is `newton_result[0]` and the flag that indicates whether
             # the algorithm converged is `newton_result[1]`.converged`.
             # In the case of an array, it is `newton_result[0]` and `newton_result[1]`.
             newton_result = newton(
-            lambda E: self.pseudo_voigt_expression(E, "cdf") - quantile,
-            # Use resonance energy as start value.
-            # There are closer guesses for an arbitrary q, but starting at the resonance 
-            # energy ensures that the algorithm does not have rounding errors from the start 
-            # which might cause it to go in the wrong direction.
-            self.resonance_energy if isinstance(quantile, (float, int)) else self.resonance_energy*np.ones(len(quantile)),
-            fprime=lambda E: self.pseudo_voigt_expression(E, "pdf"),
-            full_output=True) 
+                lambda E: self.pseudo_voigt_expression(E, "cdf") - quantile,
+                # Use resonance energy as start value.
+                # There are closer guesses for an arbitrary q, but starting at the resonance
+                # energy ensures that the algorithm does not have rounding errors from the start
+                # which might cause it to go in the wrong direction.
+                self.resonance_energy
+                if isinstance(quantile, (float, int))
+                else self.resonance_energy * np.ones(len(quantile)),
+                fprime=lambda E: self.pseudo_voigt_expression(E, "pdf"),
+                full_output=True,
+            )
             if isinstance(quantile, (int, float)):
                 if newton_result[1].converged:
                     return newton_result[0]

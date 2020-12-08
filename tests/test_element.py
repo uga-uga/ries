@@ -27,3 +27,4 @@ def test_element():
         + 206.9758973 * 0.221
         + 207.9766525 * 0.524
     )
+    assert natural_elements["Pb"].density == 11.35

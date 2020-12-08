@@ -23,7 +23,7 @@ from ries.cross_section import (
     ConstantCrossSection,
 )
 from ries.constituents.element import natural_elements
-from ries.nonresonant.xrmac import cm_to_fm, kg_to_g, xrmac
+from ries.nonresonant.xrmac import cm_to_fm, kg_to_g, xrmac_fm2_per_atom
 from ries.resonance.voigt import Voigt
 from ries.resonance.debye_model import (
     effective_temperature_debye_approximation,
@@ -121,7 +121,9 @@ class TestCrossSection:
         assert np.isclose(single_cross_section, sum_cross_section, rtol=1e-5)
 
         # Test additivity with a derived class for a nonresonant cross section.
-        photoabsorption_cross_section = photoabsorption_cross_section + xrmac["B"]
+        photoabsorption_cross_section = (
+            photoabsorption_cross_section + xrmac_fm2_per_atom["B"]
+        )
 
         photoabsorption_cross_section_value = (
             5.890e-2
@@ -138,7 +140,7 @@ class TestCrossSection:
 
     def test_grid(self):
         assert np.allclose(
-            xrmac["B"].equidistant_energy_grid((0.0, 1.0), 3),
+            xrmac_fm2_per_atom["B"].equidistant_energy_grid((0.0, 1.0), 3),
             np.array([0.0, 0.5, 1.0]),
             rtol=1e-3,
         )

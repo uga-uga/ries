@@ -17,15 +17,17 @@ import numpy as np
 from scipy.constants import physical_constants
 
 from ries.constituents.element import natural_elements
-from ries.nonresonant.xrmac import xrmac
+from ries.nonresonant.xrmac import xrmac_cm2_per_g, xrmac_fm2_per_atom
 
 
 def test_xrmac():
+    xrmac_Pb_1MeV = 7.102e-2
     xrmac_test = (
-        7.102e-2
+        xrmac_Pb_1MeV
         * 1e26
         * natural_elements["Pb"].amu
         * physical_constants["atomic mass constant"][0]
         * 1e3
     )
-    assert np.isclose(xrmac["Pb"](1.0), xrmac_test, 1e-5)
+    assert np.isclose(xrmac_cm2_per_g["Pb"](1.0), xrmac_Pb_1MeV, 1e-5)
+    assert np.isclose(xrmac_fm2_per_atom["Pb"](1.0), xrmac_test, 1e-5)

@@ -13,5 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with ries.  If not, see <https://www.gnu.org/licenses/>.
 
+include ries/constituents/geant4_densities/element_densities.txt
 include ries/constituents/nist_elements/elements.txt
 include ries/nonresonant/nist_xrmac/*.txt

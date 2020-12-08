@@ -61,8 +61,8 @@ from scipy.integrate import quad
 
 def effective_temperature_debye_approximation(T, T_D):
     """Debye model for the effective temperature
-    
-    Given the thermodynamic temperature and the Debye temperature, this function calculates the 
+
+    Given the thermodynamic temperature and the Debye temperature, this function calculates the
     effective temperature of the material.
     The defining integral is solved numerically using `scipy.integrate.quad`.
 
@@ -74,7 +74,7 @@ def effective_temperature_debye_approximation(T, T_D):
     Returns:
 
     - float or array_like, effective temperature in K.
-    
+
     Exceptions:
 
     - `ZeroDivisionError`, if a value of exactly 0 is entered for the thermodynamic temperature.

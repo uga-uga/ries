@@ -25,7 +25,8 @@ The (effective) mass number of the element :math:`A \left( \mathrm{X} \right)` i
 .. math:: A \left( \mathrm{X} \right) = \sum_A x \left( ^A\mathrm{X} \right) A
 
 The `natural_elements` dictionary provides the data for all natural elements as given in a
-compilation by Coursey et al. :cite:`Coursey2015`.
+compilation by Coursey et al. :cite:`Coursey2015`, plus the density data from Geant4 
+:cite:`Agostinelli2003` :cite:`Allison2006` :cite:`Allison2016`.
 The keys for the dictionary are the element symbols.
 For example, to obtain the proton number of lead, type:
 
@@ -45,7 +46,10 @@ from pathlib import Path
 
 import numpy as np
 
-from ries.constituents.natural_element_data import NISTElementDataReader
+from ries.constituents.natural_element_data import (
+    Geant4DensityDataReader,
+    NISTElementDataReader,
+)
 
 
 class Element:
@@ -59,9 +63,10 @@ class Element:
     - `abundances`, array of float, abundances of the isotopes.
       Must be at least as long as `isotopes`.
     - `amu`, float, effective mass of the element in atomic mass units (AMU).
+    - `density`, float, density of the element in grams per cubic centimeter.
     """
 
-    def __init__(self, Z, X, isotopes, abundances):
+    def __init__(self, Z, X, isotopes, abundances, density=None):
         """Initialization
 
         The initialization takes lists of isotopes and abundances and calculates the element mass.
@@ -73,11 +78,13 @@ class Element:
         - `isotopes`, array of `Isotope` objects, isotopes contained in the chemical element.
         - `abundances`, array of float, abundances of the isotopes.
           Must be at least as long as `isotopes`.
+        - `density`, float, density of the element in grams per cubic centimeter (default: None).
         """
         self.Z = Z
         self.X = X
         self.isotopes = isotopes
         self.abundances = abundances
+        self.density = density
         self.amu = self.amu_from_isotopic_composition(self.abundances, self.isotopes)
 
     @staticmethod
@@ -99,6 +106,9 @@ class Element:
 
 # Read the NIST natural elements data supplied with the `ries` repository and create the
 # `natural_elements` dictionary.
+geant4_density_data_reader = Geant4DensityDataReader(
+    Path(__file__).parent.absolute() / "geant4_densities/element_densities.txt"
+)
 nist_element_data_reader = NISTElementDataReader(
     Path(__file__).parent.absolute() / "nist_elements/elements.txt"
 )
@@ -107,9 +117,5 @@ X = nist_element_data_reader.read_nist_element_symbols()
 natural_elements = {}
 for Z in range(1, 119):
     abundances, isotopes = nist_element_data_reader.read_nist_element_data(Z)
-    natural_elements[X[Z]] = Element(
-        Z,
-        X[Z],
-        isotopes,
-        abundances,
-    )
+    density = geant4_density_data_reader.read_density_data(X[Z])
+    natural_elements[X[Z]] = Element(Z, X[Z], isotopes, abundances, density)

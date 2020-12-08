@@ -37,14 +37,16 @@ This module reads the tabulated data, converts them to a cross section per atom 
 equation above, and interpolates them to obtain a continuous cross section.
 At the moment, only the data for 'elemental media' from Ref. :cite:`HubbellSeltzer2004` are
 available.
-They are stored in the `xrmac` dictionary, which uses the element symbol as a key.
-For example, to obtain the XRMAC for lead at an energy of 1 MeV, use:
+They are stored in the `xrmac_cm2_per_g` and `xrmac_fm2_per_atom` dictionaries, which uses the 
+element symbol as a key.
+They contain the same data, but in different units as indicated by the dictionary name.
+For example, to obtain the XRMAC for lead at an energy of 1 MeV in :math:`\mathrm{cm^2} \mathrm{g^{-1}}`, use:
 
 ::
 
     from ries.nonresonant.xrmac import xrmac
 
-    print(xrmac['Pb'](1.))
+    print(xrmac_cm2_per_g['Pb'](1.))
 
 .. [a] Hubbell and Seltzer call it the 'total cross section per atom', since it does not
     include nuclear excitations.
@@ -224,15 +226,17 @@ class XRMAC(Nonresonant):
 
 
 # Read the XRMAC data of Hubbell and Seltzer supplied with the `ries` repository and create the
-# `xrmac` dictionary.
+# `xrmac_cm2_per_g` and `xrmac_fm2_per_atom` dictionaries.
 xrmac_data_dir = Path(__file__).parent.absolute() / "../nonresonant/nist_xrmac/"
 
-xrmac = {}
+xrmac_cm2_per_g = {}
+xrmac_fm2_per_atom = {}
 cm_to_fm = 1e13
 kg_to_g = 1e3
 
 for Z in range(1, 93):
-    xrmac[X[Z]] = XRMAC(
+    xrmac_cm2_per_g[X[Z]] = XRMAC(str(xrmac_data_dir / "{:02d}.txt".format(Z)))
+    xrmac_fm2_per_atom[X[Z]] = XRMAC(
         str(xrmac_data_dir / "{:02d}.txt".format(Z)),
         xrmac_conversion=lambda xrmac: xrmac
         * cm_to_fm ** 2

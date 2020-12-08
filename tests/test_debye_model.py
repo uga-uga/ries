@@ -22,7 +22,7 @@ from ries.resonance.debye_model import effective_temperature_debye_approximation
 
 def test_debye_model():
     # Test whether the low-temperature limit T_eff(T=0) = 3/8 T_D is reproduced.
-    # The numerical integration cannot handle a temperature of exactly zero (see below), 
+    # The numerical integration cannot handle a temperature of exactly zero (see below),
     # this is why a small value is used instead.
     T = 1.0
     T_D = 100.0
@@ -34,10 +34,10 @@ def test_debye_model():
     )
 
     with pytest.raises(ZeroDivisionError):
-        effective_temperature_debye_approximation(0., T_D)
+        effective_temperature_debye_approximation(0.0, T_D)
 
     # Test the high-temperature limit.
-    # In this limit, the effective temperature is equal to the thermodynamic temperature, 
+    # In this limit, the effective temperature is equal to the thermodynamic temperature,
     # because the crystal binding becomes negligible.
     T = 1e3
     T_D = 100.0

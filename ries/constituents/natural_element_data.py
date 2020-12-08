@@ -23,10 +23,25 @@ all naturally occurring (i.e. :math:`x \left( ^A\mathrm{X} \right) \neq 0`) isot
 For unstable elements like technetium, which cannot be found in nature, the authors of
 Ref. :cite:`Coursey2015` appear to have selected the isotopes with the longest half-lives.
 
-The code in this module reads the 'Linearized ASCII Output' from the NIST web page and creates
-a list of `Isotope` objects for use in the `ries` code.
+The code in the `NISTElementDataReader` class of this module reads the 'Linearized ASCII Output' 
+from the NIST web page and creates a list of `Isotope` objects for use in the `ries` code.
 A copy of the data file is distributed in the `ries` repository and loaded in the `element`
 module into a dictionary called `natural_elements`.
+
+For macroscopic samples, one is often also interested in the densities of the elements.
+Compiling such a list is difficult, because chemical elements show allotropy, i.e. the same
+element may exist in different forms (for example, carbon may be graphite or a diamond). 
+The particle simulation toolkit Geant4 :cite:`Agostinelli2003` :cite:`Allison2006` 
+:cite:`Allison2016` does provide such a list of densities of all natural elements at standard 
+conditions.
+Since no obvious references were found, it is difficult to decide how the Geant4 authors were 
+able to decide on one density per each element, so these data should be used for rough estimates only.
+
+The code in the `Geant4DensityDataReader` class reads data that were extracted from the source 
+code of Geant4.
+The data are distributed in the `ries` repository and loaded into a dictionary called 
+`natural_element_densities`.
+If possible, the density is also added to the `natural_elements` list above.
 """
 
 from ries.constituents.isotope import Isotope
@@ -188,3 +203,63 @@ class NISTElementDataReader:
                 if self.X_prefix in line and Z not in X:
                     X[Z] = self.read_nist_element_property(line, self.X_prefix)
         return X
+
+
+class Geant4DensityDataReader:
+    r"""Class to parse a list of chemical-element densities
+
+    The data file consists of one line per element.
+    Each line has the structure
+
+    ::
+
+        ELEMENT_SYMBOL  VALUE
+
+    where `ELEMENT_SYMBOL` is the element symbol and `VALUE` is the density in
+    :math:`\mathrm{g} \mathrm{cm}^{-3}`.
+
+    Attributes:
+
+    - `density_data_file_name`, str, name of the data file.
+    - `density_conversion`, callable, function to convert the density values (default: identity function). For example, to convert the densities from :math:`\mathrm{g} \mathrm{cm}^{-3}` to :math:`\mathrm{kg} \mathrm{m}^{-3}`, one would use:
+
+    ::
+
+        density_conversion = lambda rho: 1e3*rho
+    """
+
+    def __init__(self, density_data_file_name, density_conversion=lambda rho: rho):
+        """Initialization
+
+        Parameters:
+
+        - `density_data_file_name`, str, name of the data file.
+        - `density_conversion`, callable, function to convert the density values (default: identity function).
+        """
+        self.density_data_file_name = density_data_file_name
+        self.density_conversion = density_conversion
+
+    def read_density_data(self, X):
+        """Read density of a single element from data file
+
+        This method loops through the lines in the file given by `density_data_file_name` until
+        it finds the required element symbol in the first two characters of the line.
+        If found, the rest of the line is cast to a `float`, converted using the user-defined
+        `density_conversion`, and returned.
+        If the loop ends, but no data have been found, `None` is returned.
+
+        Parameters:
+
+        - `X`, str, element symbol.
+
+        Returns:
+
+        - float, density of the element, converted by the user-defined density-conversion function. If no conversion was given, the value is in g/cm^3. If the given element symbol is not found, None is returned.
+        """
+
+        with open(self.density_data_file_name, "r") as file:
+            for line in file:
+                if X in line[0:2]:
+                    return self.density_conversion(float(line[2:]))
+
+            return None

@@ -37,17 +37,19 @@ import numpy as np
 
 from scipy.constants import physical_constants
 
+
 class MaxwellBoltzmann:
     """Maxwell-Boltzmann distribution of particles in an ideal gas
-    
+
     Attributes:
 
     - `amu`, float, mass of the particle in atomic mass units.
     - `effective_temperature`, float, effective temperature of the ensemble of particle in K.
     """
+
     def __init__(self, amu, effective_temperature):
         """Initialization
-        
+
         Parameters:
 
         - `amu`, float, mass of the particle in atomic mass units.
@@ -59,10 +61,10 @@ class MaxwellBoltzmann:
     def get_doppler_width(self, E):
         """Doppler width in ensemble with a Maxwell-Boltzmann velocity distribution
 
-        The Doppler width :math:`\Delta` is the square root of two times the standard deviation 
-        :math:`\sigma` of a normal distribution (:math:`\Delta = \sqrt{2} \sigma`) with the 
+        The Doppler width :math:`\Delta` is the square root of two times the standard deviation
+        :math:`\sigma` of a normal distribution (:math:`\Delta = \sqrt{2} \sigma`) with the
         reference energy :math:`E`.
-        
+
         Parameters:
 
         - `E`, float or array_like, reference energy in MeV.
