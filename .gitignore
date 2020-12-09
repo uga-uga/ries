@@ -12,3 +12,6 @@ Makefile
 
 # tox
 .tox
+
+# jupyter
+notebooks/.ipynb_checkpoints
