@@ -34,6 +34,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinxcontrib.bibtex'
 ]
+bibtex_bibfiles = ['bibliography.bib']
 
 # -- Options for HTML output -------------------------------------------------
 
