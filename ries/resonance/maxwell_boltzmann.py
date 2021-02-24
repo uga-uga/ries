@@ -83,3 +83,31 @@ class MaxwellBoltzmann:
                 * physical_constants["atomic mass constant energy equivalent in MeV"][0]
             )
         )
+
+    def get_effective_temperature(self, doppler_width, E):
+        """Return doppler width for a given effective temperature
+
+        This convenience function is the inverse of `MaxwellBoltzmann.get_doppler_width`.
+        In the literature, in particular for schematic plots, one often finds that the Doppler
+        width is given instead of the effective temperature, since it can directly be compared to
+        the total width of a resonance.
+        Metzger :cite:`Metzger1959`, for example, makes the relative magnitude of :math:`\Delta`
+        :math:`Gamma` a criterion to decide whether the Gaussian 'Doppler form' of the resonance
+        shape can be used.
+
+        Parameters
+        ----------
+        - `doppler_width`, float or array_like, Doppler width :math:`\Delta` in MeV.
+        - `E`, float or array_like, reference energy in MeV.
+
+        Returns
+        -------
+
+        - float or array_like, Effective temperature in K
+        """
+
+        return (
+            doppler_width
+            * self.amu
+            * physical_constants["atomic mass constant energy equivalent in MeV"][0]
+        ) / (E * E * 2.0 * physical_constants["Boltzmann constant in eV/K"][0] * 1e-6)
