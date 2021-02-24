@@ -24,5 +24,5 @@ def test_doppler_width():
 
     maxwell_boltzmann = MaxwellBoltzmann(2.0 * physical_constants["Boltzmann constant in eV/K"][0]*1e-6/physical_constants["atomic mass constant energy equivalent in MeV"][0], 1.)
 
-    assert maxwell_boltzmann.get_doppler_width(1.) == 1.
-    assert maxwell_boltzmann.get_effective_temperature(maxwell_boltzmann.get_doppler_width(1.), 1.) == 1.
+    assert maxwell_boltzmann.get_doppler_width(2.) == 2.
+    assert maxwell_boltzmann.get_effective_temperature(maxwell_boltzmann.get_doppler_width(1.), 2.0 * physical_constants["Boltzmann constant in eV/K"][0]*1e-6/physical_constants["atomic mass constant energy equivalent in MeV"][0], 2.) == 0.25

@@ -59,7 +59,7 @@ class MaxwellBoltzmann:
         self.effective_temperature = effective_temperature
 
     def get_doppler_width(self, E):
-        """Doppler width in ensemble with a Maxwell-Boltzmann velocity distribution
+        r"""Doppler width in ensemble with a Maxwell-Boltzmann velocity distribution
 
         The Doppler width :math:`\Delta` is the square root of two times the standard deviation
         :math:`\sigma` of a normal distribution (:math:`\Delta = \sqrt{2} \sigma`) with the
@@ -84,8 +84,9 @@ class MaxwellBoltzmann:
             )
         )
 
-    def get_effective_temperature(self, doppler_width, E):
-        """Return doppler width for a given effective temperature
+    @staticmethod
+    def get_effective_temperature(doppler_width, amu, E):
+        r"""Return doppler width for a given effective temperature
 
         This convenience function is the inverse of `MaxwellBoltzmann.get_doppler_width`.
         In the literature, in particular for schematic plots, one often finds that the Doppler
@@ -98,6 +99,7 @@ class MaxwellBoltzmann:
         Parameters
         ----------
         - `doppler_width`, float or array_like, Doppler width :math:`\Delta` in MeV.
+        - `amu`, float, mass of the particle in atomic mass units.
         - `E`, float or array_like, reference energy in MeV.
 
         Returns
@@ -107,7 +109,7 @@ class MaxwellBoltzmann:
         """
 
         return (
-            doppler_width
-            * self.amu
+            doppler_width*doppler_width
+            * amu
             * physical_constants["atomic mass constant energy equivalent in MeV"][0]
         ) / (E * E * 2.0 * physical_constants["Boltzmann constant in eV/K"][0] * 1e-6)
