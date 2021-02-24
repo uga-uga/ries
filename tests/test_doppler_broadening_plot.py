@@ -22,8 +22,6 @@ from ries.resonance.gauss import Gauss
 from ries.resonance.maxwell_boltzmann import MaxwellBoltzmann
 from ries.resonance.voigt import Voigt
 
-from .boron import B11, natural_boron
-
 def test_doppler_broadening_plot():
 
     amu = 10.
@@ -72,8 +70,6 @@ def test_doppler_broadening_plot():
     fig, ax = plt.subplots(len(Gammas),1, figsize=(5, len(Gammas)*2.2))
     plt.subplots_adjust(hspace=0.)
     for i in range(len(Gammas)):
-        if i < len(Gammas)-1:
-            pass
         ax[i].tick_params(labelsize=8)
         ax[i].set_ylabel(r"$\sigma (E) / \sigma_0$")
         ax[i].plot(energies_over_Delta, cross_sections_at_rest[i](energies, input_is_absolute_energy=False)/cross_section_at_maximum, color='black', label='$\sigma_a$')
