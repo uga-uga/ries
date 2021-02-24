@@ -120,7 +120,7 @@ class NISTElementDataReader:
                     )
                 elif self.abundance_prefix in line and current_Z == Z:
                     abundance = self.read_nist_element_property_with_uncertainty(
-                        line, self.abundance_prefix, default=1.0
+                        line, self.abundance_prefix, default=0.0
                     )
                     AX = "{:d}{}".format(A, X)
                     abundances[AX] = abundance
