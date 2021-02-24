@@ -30,6 +30,7 @@ def test_doppler_broadening_plot():
     Delta = 1e-6
     effective_temperature = MaxwellBoltzmann.get_effective_temperature(Delta, amu, 1.)
     Gammas = [0.1*Delta, Delta]
+    Gamma_labels = [r'$\Gamma = \Delta / 10$', r'$\Gamma = \Delta$']
 
     ground_state = GroundState("0^+_1", 0, 1)
 
@@ -65,9 +66,8 @@ def test_doppler_broadening_plot():
         )
 
     energies = cross_sections_at_rest[0].equidistant_energy_grid(0.99, 1000) - cross_sections_at_rest[0].intermediate_state.excitation_energy
-    energies_in_eV = energies*1e6
-    fm2_to_barn =1e-2
-    cross_section_scaling_factor = 3
+    energies_over_Delta = energies/Delta
+    cross_section_at_maximum = cross_sections_at_rest[0](0., input_is_absolute_energy=False)
 
     fig, ax = plt.subplots(len(Gammas),1, figsize=(5, len(Gammas)*2.2))
     plt.subplots_adjust(hspace=0.)
@@ -75,11 +75,11 @@ def test_doppler_broadening_plot():
         if i < len(Gammas)-1:
             pass
         ax[i].tick_params(labelsize=8)
-        ax[i].set_ylabel(r"$\sigma (E)$ ($\times 10^{:d}$ b)".format(cross_section_scaling_factor))
-        ax[i].plot(energies_in_eV, cross_sections_at_rest[i](energies, input_is_absolute_energy=False)*fm2_to_barn*10**(-cross_section_scaling_factor), color='black', label='$\sigma_a$')
-        ax[i].plot(energies_in_eV, cross_sections[i](energies, input_is_absolute_energy=False)*fm2_to_barn*10**(-cross_section_scaling_factor), color='royalblue', label=r'$\tilde{\sigma}_a^D$')
-        ax[i].plot(energies_in_eV, cross_section_approximations[i](energies, input_is_absolute_energy=False)*fm2_to_barn*10**(-cross_section_scaling_factor), '--', color='orange', label=r'$\sigma_a^D$')
-        ax[i].text(0.1, 0.7, r"$\Delta = {:3.1f}\,$eV".format(Delta*1e6) + "\n" + r"$\Gamma = {:3.1f}\,$eV".format(Gammas[i]*1e6), transform=ax[i].transAxes)
+        ax[i].set_ylabel(r"$\sigma (E) / \sigma_0$")
+        ax[i].plot(energies_over_Delta, cross_sections_at_rest[i](energies, input_is_absolute_energy=False)/cross_section_at_maximum, color='black', label='$\sigma_a$')
+        ax[i].plot(energies_over_Delta, cross_sections[i](energies, input_is_absolute_energy=False)/cross_section_at_maximum, color='royalblue', label=r'$\tilde{\sigma}_a^D$')
+        ax[i].plot(energies_over_Delta, cross_section_approximations[i](energies, input_is_absolute_energy=False)/cross_section_at_maximum, '--', color='orange', label=r'$\sigma_a^D$')
+        ax[i].text(0.1, 0.7, Gamma_labels[i], transform=ax[i].transAxes, fontsize=12)
         ax[i].legend()
-    ax[-1].set_xlabel("$E - E_r$ (eV)")
+    ax[-1].set_xlabel(r"$(E - E_r) / \Delta$")
     plt.savefig("doppler_broadening_plot.pdf")

@@ -25,8 +25,8 @@ def test_debye_model_plot():
     T = T_over_T_D*T_D
 
     fig, ax = plt.subplots(1,1, figsize=(5, 4))
-    ax.set_xlabel(r"$T / T_D$")
-    ax.set_ylabel(r"$T_\mathrm{eff} / T_D$")
+    ax.set_xlabel(r"$T / \Theta_D$")
+    ax.set_ylabel(r"$T_\mathrm{eff} / \Theta_D$")
     ax.tick_params(labelsize=8)
     ax.plot(T_over_T_D, effective_temperature_debye_approximation(T, T_D)/T_D, color='black', label='Solid')
     ax.plot(T_over_T_D, T_over_T_D, '--', color='black', label='Ideal Gas')
