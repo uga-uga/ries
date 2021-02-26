@@ -18,25 +18,36 @@ import numpy as np
 
 from ries.resonance.debye_model import effective_temperature_debye_approximation
 
+
 def test_debye_model_plot():
-    T_D = 1.
+    T_D = 1.0
 
     T_over_T_D_max = 1.5
     T_over_T_D = np.linspace(1e-2, T_over_T_D_max)
-    T = T_over_T_D*T_D
+    T = T_over_T_D * T_D
 
-    fig, ax = plt.subplots(1,1, figsize=(5, 4))
+    fig, ax = plt.subplots(1, 1, figsize=(5, 4))
     ax.set_xlabel(r"$T / \Theta_D$")
-    ax.set_xlim(0., T_over_T_D_max)
-    ax.set_ylim(0., T_over_T_D_max)
+    ax.set_xlim(0.0, T_over_T_D_max)
+    ax.set_ylim(0.0, T_over_T_D_max)
     ax.set_ylabel(r"$T_\mathrm{eff} / \Theta_D$")
     ax.tick_params(labelsize=8)
-    ax.plot(T_over_T_D, effective_temperature_debye_approximation(T, T_D)/T_D, color='black', label='Solid')
-    ax.plot(T_over_T_D, T_over_T_D, '--', color='black', label='Ideal Gas')
+    ax.plot(
+        T_over_T_D,
+        effective_temperature_debye_approximation(T, T_D) / T_D,
+        color="black",
+        label="Solid",
+    )
+    ax.plot(T_over_T_D, T_over_T_D, "--", color="black", label="Ideal Gas")
 
-    ax.plot([0., 1.], 3./8.*np.array([1., 1.]), ':', color='black')
-    ax.annotate("", [1., 0.], [1., 3./8.], arrowprops=dict(arrowstyle="<|-|>", facecolor='black'))
-    ax.text(1.05, 3./16., r'$\frac{3}{8}$', verticalalignment='center', fontsize=14)
+    ax.plot([0.0, 1.0], 3.0 / 8.0 * np.array([1.0, 1.0]), ":", color="black")
+    ax.annotate(
+        "",
+        [1.0, 0.0],
+        [1.0, 3.0 / 8.0],
+        arrowprops=dict(arrowstyle="<|-|>", facecolor="black"),
+    )
+    ax.text(1.05, 3.0 / 16.0, r"$\frac{3}{8}$", verticalalignment="center", fontsize=14)
 
     ax.legend()
 

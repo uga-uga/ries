@@ -26,14 +26,16 @@ Precise enough for serious work, and fast enough to act as the cost function of 
 * [setuptools](https://setuptools.readthedocs.io/)
 * [scipy](https://www.scipy.org/)
 
-The [tox](https://tox.readthedocs.io/) tool is used to run self tests and build the documentation.
-Both are optional and require the following packages:
+The [tox](https://tox.readthedocs.io/) tool is used to run self tests, build the documentation, and check whether the code is in standard format.
+This requires the following packages:
 
+* [black](https://black.readthedocs.io)
 * [matplotlib](https://matplotlib.org/)
 * [pytest](https://docs.pytest.org/)
 * [pytest-cov](https://pytest-cov.readthedocs.io/)
 * [sphinx](https://www.sphinx-doc.org/)
 * [sphinxcontrib-bibtex](https://sphinxcontrib-bibtex.readthedocs.io/)
+* [tox](https://tox.readthedocs.io/) 
 
 ## Installation
 

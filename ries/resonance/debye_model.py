@@ -86,7 +86,10 @@ def effective_temperature_debye_approximation(T, T_D):
         * quad(lambda t: t ** 3 * (1.0 / (np.exp(t) - 1.0) + 0.5), 0.0, T_D / T)[0]
     )
 
-effective_temperature_debye_approximation = np.vectorize(effective_temperature_debye_approximation)
+
+effective_temperature_debye_approximation = np.vectorize(
+    effective_temperature_debye_approximation
+)
 
 # Source: https://www.knowledgedoor.com/2/elements_handbook/debye_temperature.html
 room_temperature_T_D = {

@@ -109,7 +109,8 @@ class MaxwellBoltzmann:
         """
 
         return (
-            doppler_width*doppler_width
+            doppler_width
+            * doppler_width
             * amu
             * physical_constants["atomic mass constant energy equivalent in MeV"][0]
         ) / (E * E * 2.0 * physical_constants["Boltzmann constant in eV/K"][0] * 1e-6)

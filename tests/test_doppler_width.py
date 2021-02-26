@@ -20,9 +20,26 @@ from scipy.constants import physical_constants
 
 from ries.resonance.maxwell_boltzmann import MaxwellBoltzmann
 
+
 def test_doppler_width():
 
-    maxwell_boltzmann = MaxwellBoltzmann(2.0 * physical_constants["Boltzmann constant in eV/K"][0]*1e-6/physical_constants["atomic mass constant energy equivalent in MeV"][0], 1.)
+    maxwell_boltzmann = MaxwellBoltzmann(
+        2.0
+        * physical_constants["Boltzmann constant in eV/K"][0]
+        * 1e-6
+        / physical_constants["atomic mass constant energy equivalent in MeV"][0],
+        1.0,
+    )
 
-    assert maxwell_boltzmann.get_doppler_width(2.) == 2.
-    assert maxwell_boltzmann.get_effective_temperature(maxwell_boltzmann.get_doppler_width(1.), 2.0 * physical_constants["Boltzmann constant in eV/K"][0]*1e-6/physical_constants["atomic mass constant energy equivalent in MeV"][0], 2.) == 0.25
+    assert maxwell_boltzmann.get_doppler_width(2.0) == 2.0
+    assert (
+        maxwell_boltzmann.get_effective_temperature(
+            maxwell_boltzmann.get_doppler_width(1.0),
+            2.0
+            * physical_constants["Boltzmann constant in eV/K"][0]
+            * 1e-6
+            / physical_constants["atomic mass constant energy equivalent in MeV"][0],
+            2.0,
+        )
+        == 0.25
+    )
