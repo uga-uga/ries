@@ -40,7 +40,7 @@ def test_doppler_broadening_plot():
 
     sigma = Voigt(
        GroundState("0^+_1", 0, 1),
-       State("1^+_1", 2, 1, 1., {"0^+_1": 1e-6}),
+       State("1^+_1", 2, 1, 1., {"0^+_1": 1e-7}),
        10.,
        100.
     )
@@ -48,13 +48,14 @@ def test_doppler_broadening_plot():
     Delta = sigma.probability_distribution.doppler_width
     cross_section_at_maximum = sigma(0., input_is_absolute_energy=False)
 
-    K = 0.5*np.sqrt(np.pi)*cross_section_at_maximum*sigma.intermediate_state.width/Delta
-    kappa = lambda energy : 0.2*K
+    K = cross_section_at_maximum
+    K_over_kappa = 5
+    kappa = lambda energy : K/K_over_kappa
 
     beam_in_target = BeamInTarget(sigma, kappa)
 
-    e = sigma.equidistant_energy_grid(0.98, 100)
-    z = np.linspace(0., 1./K, 50)
+    e = sigma.equidistant_energy_grid(0.995, 100)
+    z = np.linspace(0., 2./K, 50)
 
     Z, E = np.meshgrid(z, e)
     Phi = beam_in_target.photon_flux_density(Z, E) 
@@ -63,33 +64,44 @@ def test_doppler_broadening_plot():
     _ccount = 10
     _cmap = 'rainbow'
     _figsize = (5.5, 5.)
+    _fontsize_text = 14
     _rcount = 10
     _view = (40, -35)
     _wireframe_color = 'grey'
 
-    _xlabel = r'$\mathcal{Z} \times K = \mathcal{Z} \times 5 \kappa$'
+    _xlabel = r'$\mathcal{Z} \times K$'
+    _xlim = [0., z[-1]*K]
+    _xticks = [0., 0.5, 1., 1.5, 2.]
     _ylabel = r'$(E - E_r) / \Delta$'
+    _K_over_kappa_label = r'$\kappa = K/{:d}$'.format(K_over_kappa)
+    _zlim = [0., 1.]
 
     fig = plt.figure(figsize=_figsize)
     ax = fig.add_subplot(111, projection='3d')
     ax.set_xlabel(_xlabel)
+    ax.set_xlim(_xlim)
+    ax.set_xticks(_xticks)
     ax.set_ylabel(_ylabel)
     ax.set_zlabel(r'$\Phi_K (\mathcal{Z}, E)$')
-    ax.set_zlim(0., 1.)
+    ax.set_zlim(_zlim)
     ax.plot_surface(Z*K, (E-sigma.probability_distribution.resonance_energy)/Delta, Phi, cmap=_cmap)
     ax.plot_wireframe(Z*K, (E-sigma.probability_distribution.resonance_energy)/Delta, Phi, color=_wireframe_color, rcount=_rcount, ccount=_ccount)
     ax.view_init(*_view)
+    ax.text(1.8, -3.2, 0., _K_over_kappa_label, (0, 1, 0), fontsize=_fontsize_text)
 
     plt.savefig('photon_flux_density.pdf')
 
     fig = plt.figure(figsize=_figsize)
     ax = fig.add_subplot(111, projection='3d')
     ax.set_xlabel(_xlabel)
+    ax.set_xlim(_xlim)
+    ax.set_xticks(_xticks)
     ax.set_ylabel(_ylabel)
-    ax.set_zlim(0., 1.)
-    ax.set_zlabel(r'$\alpha_K (\mathcal{Z}, E) / \sigma_0$')
-    ax.plot_surface(Z*K, (E-sigma.probability_distribution.resonance_energy)/Delta, alpha/cross_section_at_maximum, cmap=_cmap)
-    ax.plot_wireframe(Z*K, (E-sigma.probability_distribution.resonance_energy)/Delta, alpha/cross_section_at_maximum, color=_wireframe_color, rcount=_rcount, ccount=_ccount)
+    ax.set_zlabel(r'$\alpha_K (\mathcal{Z}, E) / K$')
+    ax.set_zlim(_zlim)
+    ax.plot_surface(Z*K, (E-sigma.probability_distribution.resonance_energy)/Delta, alpha/K, cmap=_cmap)
+    ax.plot_wireframe(Z*K, (E-sigma.probability_distribution.resonance_energy)/Delta, alpha/K, color=_wireframe_color, rcount=_rcount, ccount=_ccount)
     ax.view_init(*_view)
+    ax.text(0., -3.5, 0.73, _K_over_kappa_label, (0, 1, 0), fontsize=_fontsize_text)
 
     plt.savefig('resonance_absorption_density.pdf')
