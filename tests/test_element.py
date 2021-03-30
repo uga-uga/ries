@@ -28,3 +28,8 @@ def test_element():
         + 207.9766525 * 0.524
     )
     assert natural_elements["Pb"].density == 11.35
+
+    # In an earlier version of the code, the following test failed, because the radioactive
+    # isotope 14C, which only exists in traces in natural carbon, is included in the NIST dataset.
+    # Its abundance value is not given.
+    assert natural_elements["C"].amu == 0.9893 * 12.0000000 + 0.0107 * 13.00335483507
