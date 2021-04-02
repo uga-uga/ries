@@ -61,10 +61,13 @@ def test_doppler_broadening_plot():
     _ccount = 10
     _cmap = "rainbow"
     _figsize = (5.5, 5.0)
-    _fontsize_text = 14
     _rcount = 10
     _view = (40, -35)
     _wireframe_color = "grey"
+
+    _fontsize_axis_label = 16
+    _fontsize_text = 16
+    _fontsize_ticks = 14
 
     _xlabel = r"$\mathcal{Z} \times K$"
     _xlim = [0.0, z[-1] * K]
@@ -75,12 +78,13 @@ def test_doppler_broadening_plot():
 
     fig = plt.figure(figsize=_figsize)
     ax = fig.add_subplot(111, projection="3d")
-    ax.set_xlabel(_xlabel)
+    ax.set_xlabel(_xlabel, fontsize=_fontsize_axis_label)
     ax.set_xlim(_xlim)
     ax.set_xticks(_xticks)
-    ax.set_ylabel(_ylabel)
-    ax.set_zlabel(r"$\Phi_K (\mathcal{Z}, E)$")
+    ax.set_ylabel(_ylabel, fontsize=_fontsize_axis_label)
+    ax.set_zlabel(r"$\Phi_K (\mathcal{Z}, E)$", fontsize=_fontsize_axis_label)
     ax.set_zlim(_zlim)
+    ax.tick_params(labelsize=_fontsize_ticks, pad=-0.5)
     ax.plot_surface(
         Z * K,
         (E - sigma.probability_distribution.resonance_energy) / Delta,
@@ -98,16 +102,17 @@ def test_doppler_broadening_plot():
     ax.view_init(*_view)
     ax.text(1.8, -3.2, 0.0, _K_over_kappa_label, (0, 1, 0), fontsize=_fontsize_text)
 
-    plt.savefig("photon_flux_density.pdf")
+    plt.savefig("photon_flux_density.pdf", bbox_inches="tight")
 
     fig = plt.figure(figsize=_figsize)
     ax = fig.add_subplot(111, projection="3d")
-    ax.set_xlabel(_xlabel)
+    ax.set_xlabel(_xlabel, fontsize=_fontsize_axis_label)
     ax.set_xlim(_xlim)
     ax.set_xticks(_xticks)
-    ax.set_ylabel(_ylabel)
-    ax.set_zlabel(r"$\alpha_K (\mathcal{Z}, E) / K$")
+    ax.set_ylabel(_ylabel, fontsize=_fontsize_axis_label)
+    ax.set_zlabel(r"$\alpha_K (\mathcal{Z}, E) / K$", fontsize=_fontsize_axis_label)
     ax.set_zlim(_zlim)
+    ax.tick_params(labelsize=_fontsize_ticks, pad=-0.5)
     ax.plot_surface(
         Z * K,
         (E - sigma.probability_distribution.resonance_energy) / Delta,
@@ -125,4 +130,4 @@ def test_doppler_broadening_plot():
     ax.view_init(*_view)
     ax.text(0.0, -3.5, 0.73, _K_over_kappa_label, (0, 1, 0), fontsize=_fontsize_text)
 
-    plt.savefig("resonance_absorption_density.pdf")
+    plt.savefig("resonance_absorption_density.pdf", bbox_inches="tight")

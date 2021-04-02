@@ -26,12 +26,17 @@ def test_debye_model_plot():
     T_over_T_D = np.linspace(1e-2, T_over_T_D_max)
     T = T_over_T_D * T_D
 
+    _fontsize_axis_label = 16
+    _fontsize_legend = 12
+    _fontsize_text = 16
+    _fontsize_ticks = 13
+
     fig, ax = plt.subplots(1, 1, figsize=(5, 4))
-    ax.set_xlabel(r"$T / \Theta_D$")
+    ax.set_xlabel(r"$T / \Theta_D$", fontsize=_fontsize_axis_label)
     ax.set_xlim(0.0, T_over_T_D_max)
     ax.set_ylim(0.0, T_over_T_D_max)
-    ax.set_ylabel(r"$T_\mathrm{eff} / \Theta_D$")
-    ax.tick_params(labelsize=8)
+    ax.set_ylabel(r"$T_\mathrm{eff} / \Theta_D$", fontsize=_fontsize_axis_label)
+    ax.tick_params(labelsize=_fontsize_ticks)
     ax.plot(
         T_over_T_D,
         effective_temperature_debye_approximation(T, T_D) / T_D,
@@ -47,8 +52,14 @@ def test_debye_model_plot():
         [1.0, 3.0 / 8.0],
         arrowprops=dict(arrowstyle="<|-|>", facecolor="black"),
     )
-    ax.text(1.05, 3.0 / 16.0, r"$\frac{3}{8}$", verticalalignment="center", fontsize=14)
+    ax.text(
+        1.05,
+        3.0 / 16.0,
+        r"$\frac{3}{8}$",
+        verticalalignment="center",
+        fontsize=_fontsize_text,
+    )
 
-    ax.legend()
+    ax.legend(fontsize=_fontsize_legend)
 
-    plt.savefig("debye_model_plot.pdf")
+    plt.savefig("debye_model_plot.pdf", bbox_inches="tight")

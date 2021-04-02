@@ -73,17 +73,22 @@ def test_doppler_broadening_plot():
         0.0, input_is_absolute_energy=False
     )
 
+    _fontsize_axis_label = 16
+    _fontsize_legend = 14
+    _fontsize_text = 14
+    _fontsize_ticks = 12
+
     fig, ax = plt.subplots(len(Gammas), 1, figsize=(5, len(Gammas) * 2.2))
     plt.subplots_adjust(hspace=0.0)
     for i in range(len(Gammas)):
-        ax[i].tick_params(labelsize=8)
-        ax[i].set_ylabel(r"$\sigma (E) / \sigma_0$")
+        ax[i].tick_params(labelsize=_fontsize_ticks)
+        ax[i].set_ylabel(r"$\sigma (E) / \sigma_0$", fontsize=_fontsize_axis_label)
         ax[i].plot(
             energies_over_Delta,
             cross_sections_at_rest[i](energies, input_is_absolute_energy=False)
             / cross_section_at_maximum,
             color="black",
-            label="$\sigma_a$",
+            label=r"$\sigma_a$",
         )
         ax[i].plot(
             energies_over_Delta,
@@ -100,7 +105,13 @@ def test_doppler_broadening_plot():
             color="orange",
             label=r"$\sigma_a^D$",
         )
-        ax[i].text(0.1, 0.7, Gamma_labels[i], transform=ax[i].transAxes, fontsize=12)
-        ax[i].legend()
-    ax[-1].set_xlabel(r"$(E - E_r) / \Delta$")
-    plt.savefig("doppler_broadening_plot.pdf")
+        ax[i].text(
+            0.1,
+            0.7,
+            Gamma_labels[i],
+            transform=ax[i].transAxes,
+            fontsize=_fontsize_text,
+        )
+        ax[i].legend(fontsize=_fontsize_legend)
+    ax[-1].set_xlabel(r"$(E - E_r) / \Delta$", fontsize=_fontsize_axis_label)
+    plt.savefig("doppler_broadening_plot.pdf", bbox_inches="tight")
