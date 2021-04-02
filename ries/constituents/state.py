@@ -57,8 +57,8 @@ class GroundState:
     - `J_pi`, str, unique identifier.
     - `two_J`, int, two times the total angular momentum quantum number.
     - `parity`, int, parity quantum number (`1` means 'positive' and `-1` means 'negative').
-    - `excitation_energy`, float, excitation energy with respect to the ground state
-      (since this class represents the ground state, the excitation energy is zero).
+    - `excitation_energy`, float, excitation energy with respect to the ground state in MeV
+      (since this class represents the ground state, the excitation energy is 0 MeV).
     """
 
     def __init__(self, J_pi, two_J, parity):
@@ -84,11 +84,11 @@ class State(GroundState):
     - `J_pi`, str, unique identifier.
     - `two_J`, int, two times the total angular momentum quantum number.
     - `parity`, int, parity quantum number (`1` means 'positive' and `-1` means 'negative').
-    - `excitation_energy`, float, excitation energy with respect to the ground state.
-    - `partial_widths`, dictionary, list of partial widths to lower-lying states.
+    - `excitation_energy`, float, excitation energy with respect to the ground state in MeV.
+    - `partial_widths`, dictionary, list of partial widths to lower-lying states in MeV.
       The list should be given as a dictionary with `J_pi` of the final states of the decay as keys,
       and the partial widths as values.
-    - `width`, float, total width.
+    - `width`, float, total width in MeV.
       This property is inferred from the given partial widths.
     """
 
@@ -102,8 +102,8 @@ class State(GroundState):
         - `J_pi`, str, unique identifier.
         - `two_J`, int, two times the total angular momentum quantum number.
         - `parity`, int, parity quantum number (`1` means 'positive' and `-1` means 'negative').
-        - `excitation_energy`, float, excitation energy with respect to the ground state.
-        - `partial_widths`, dictionary, list of partial widths to lower-lying states.
+        - `excitation_energy`, float, excitation energy with respect to the ground state in MeV.
+        - `partial_widths`, dictionary, list of partial widths to lower-lying states in MeV.
           The list should be given as a dictionary with `J_pi` of the final states of the decay as keys,
           and the partial widths as values.
         """
