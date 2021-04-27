@@ -14,9 +14,9 @@
 # along with ries.  If not, see <https://www.gnu.org/licenses/>.
 
 r"""
-At first order in quantum electrodynamics, the cross section
+At first order in quantum electrodynamics (QED), the cross section
 :math:`\sigma_\mathrm{Compton} \left( E \right)` for Compton scattering of a photon with an
-initial energy :math:`E` off a free charged particle with mass :math:`m` at rest is given by the
+initial energy :math:`E` off a free charged particle with a charge of :math:`q=1e` and a mass :math:`m` at rest is given by the
 Klein-Nishina formula :cite:`KleinNishina1929`:
 
 .. math:: \sigma_\mathrm{Compton} \left( E \right) = \frac{\pi \alpha^2 \hbar^2}{m^2 c^2} \frac{1}{x^3} \left\{ \frac{2x \left[ 2 + x \left( 1 + x \right) \left( 8 + x \right)\right]}{\left( 1 + 2 x \right)^2} + \left[ \left( x - 2 \right) x - 2 \right] \mathrm{log} \left( 1 + 2x \right) \right\}.
@@ -29,6 +29,8 @@ has been used.
 The symbols :math:`\alpha`, :math:`\hbar`, :math:`m`, and :math:`c` denote the fine-structure
 constant, the reduced Planck constant, the charged particle's rest mass, and the speed of light,
 respectively.
+For a particle with :math:`q \neq 1e`, the cross section scales with :math:`q^4`.
+This is because the QED Feynman diagram for the process has two vertices, each of them contributing a proportionality to the charge of the scattering center to the scattering amplitude (see, e.g. chapters 4 and 5 in :cite:`PeskinSchroeder1995` for a more modern treatment than Ref. :cite:`KleinNishina1929`). 
 
 The corresponding solid-angle differential cross section is given by :cite:`Depaola2003`:
 
@@ -79,18 +81,20 @@ class KleinNishina(Nonresonant):
     r"""(Differential) Cross section for Compton scattering of a photon off a free charged particle
 
     Note that the Klein-Nishina formula gives the cross section for the scattering off a single
-    charged particle.
-    The default particle of this class is the electron, with a charge of :math:`1e` and a mass energy
+    charged particle with a single elementary charge.
+    The default particle of this class is the electron, with a mass-energy
     equivalent of about :math:`0.511 \mathrm{MeV}`.
 
     In low-energy nuclear physics, one is often interested in the cross section per atom, to be able
     to compare this electromagnetic process to the cross sections for nuclear reactions.
     To obtain the cross section for scattering off an atom, the cross section needs to be multiplied
-    by the number of electrons per atom.
+    by the number of electrons per atom (:math:`Z`).
+
+    Note that the cross section for scattering off :math:`Z` particles with a charge of :math:`q=1e` is not the same as scattering off a single particle with a charge of :math:`q=Z e`.
 
     Attributes:
 
-    - `Z`: int or float, charge in units of elementary charges (default: 1).
+    - `Z`: int or float, number of charge-1e scattering centers (default: 1, i.e. scattering on a single charge-1 particle).
     - `mc2`: float, mass energy equivalent (mass times speed of light squared) of the charged particle in :math:`\mathrm{MeV}` (default: rest mass of an electron from `scipy.constants.physical_constants`, i.e.: :math:`m_e c^2 \approx 0.511 \mathrm{MeV}`).
     - `scale_factor`: float, the scale factor of the Klein-Nishina cross section that is independent of the kinematics, i.e. :math:`Z \alpha^2 \hbar^2 / \left( m^2 c^2 \right)`.
     """
@@ -102,7 +106,7 @@ class KleinNishina(Nonresonant):
 
         Parameters:
 
-        - `Z`: int or float, charge in units of elementary charges (default: 1).
+        - `Z`: int or float, number of charge-1e scattering centers (default: 1).
         - `m`: float, mass of the charged particle in :math:`\mathrm{MeV} c^{-2}` (default: rest mass of an electron from `scipy.constants.physical_constants`, i.e.: :math:`m_e \approx 0.511 \mathrm{MeV}  c^{-2}`).
         """
         self.Z = Z

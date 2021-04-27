@@ -17,7 +17,7 @@ import setuptools
 
 setuptools.setup(
     name="ries",
-    version="0.2.1",
+    version="0.2.2",
     description="resonances integrated over energy and space",
     author="Udo Friman-Gayer",
     author_email="ufg@email.unc.edu",
