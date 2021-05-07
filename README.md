@@ -18,6 +18,10 @@ The object-orientated and modular library `ries` allows users to simulate the pa
 It aims to bridge the gap between pen-and-paper calculations and full-scale Monte Carlo particle simulations like Geant4 [4] or MCNP [5]:
 Precise enough for serious work, and fast enough to act as the cost function of an optimization problem or the data model in a Bayesian analysis.
 
+`ries` uses `ℏc = 197.3269804 MeV` fm for the product of the reduced Planck constant and the speed of light.
+This means that all energies are assumed to be given in Mega electron volts, and all lengths in femtometers.
+Temperatures are assumed to be given in Kelvin.
+
 ## Prerequisites
 
 `ries` is [python3](https://www.python.org/) code and requires the following packages:
